@@ -6,7 +6,6 @@
 - Python3
 - [pip](https://pip.pypa.io/en/stable/installation/)
 - [VirtualEnv](https://virtualenv.pypa.io/en/latest/installation.html#via-pip)
-- [Latest Application](https://github.com/jerehops/Electronic-Prescription)
 
 ## Windows
 ### Installing prerequistes
