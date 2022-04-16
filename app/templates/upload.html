@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Upload your data!
+</h1>
+<form action = "/upload" method = "POST" 
+         enctype = "multipart/form-data">
+         <input type = "file" name = "file" />
+         <br><br>
+         <input type = "submit"/>
+</form>
+{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class="notification is-danger">
+		{% for message in messages %}
+		  <li>{{ messages[0] }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+{% endblock %}
