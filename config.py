@@ -4,7 +4,6 @@ base_dir = path.abspath(path.dirname(__file__))
 class Config:
   TESTING = True
   DEBUG = True
-  FLASK_ENV = "development"
   SECRET_KEY = "NobodyKnowsThisShhh!!"
   SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI') or 'sqlite:///' + path.join(base_dir, 'test.db')
   SQLALCHEMY_TRACK_MODIFICATIONS = False
