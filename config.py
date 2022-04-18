@@ -6,7 +6,7 @@ class Config:
   DEBUG = True
   FLASK_ENV = "development"
   SECRET_KEY = "NobodyKnowsThisShhh!!"
-  SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI') or 'sqlite:///' + path.join(base_dir, 'test.db');
+  SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI') or 'sqlite:///' + path.join(base_dir, 'test.db')
   SQLALCHEMY_TRACK_MODIFICATIONS = False
   FLASK_ADMIN_SWATCH = 'cerulean'
   TEMPLATES_AUTO_RELOAD = True

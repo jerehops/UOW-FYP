@@ -37,4 +37,8 @@ def init_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    # blueprint for spark parts of app
+    from .spark import spark as spark_blueprint
+    app.register_blueprint(spark_blueprint)
+    
     return app

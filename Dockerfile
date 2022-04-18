@@ -12,7 +12,7 @@ RUN \
 # Install Python
 RUN \
     apt-get update && \
-    apt-get install -y python python-dev python-pip python-virtualenv && \
+    apt-get install -y install python3.8 && \
     rm -rf /var/lib/apt/lists/*
 
 # Install PySpark and Numpy
