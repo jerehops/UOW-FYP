@@ -1,9 +1,5 @@
 FROM ubuntu:latest
 
-WORKDIR /app
-
-COPY . .
-
 RUN \
   apt-get update && \
   apt-get install -y openjdk-8-jdk && \
@@ -15,10 +11,9 @@ RUN \
     apt-get install -y install python3.8 && \
     rm -rf /var/lib/apt/lists/*
 
-# Install PySpark and Numpy
-RUN \
-    pip install --upgrade pip && \
-    pip install pyspark
+WORKDIR /app
+
+COPY . .
 
 RUN pip install -r requirements.txt
 
