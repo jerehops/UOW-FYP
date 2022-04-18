@@ -1,5 +1,4 @@
-name: Docker Image CI
-
+name: Flask Docker CI
 on:
   push:
     branches: [ main ]
