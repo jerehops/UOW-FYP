@@ -1,15 +1,9 @@
-FROM ubuntu:latest
+FROM python:3.8-slim-buster
 
 RUN \
   apt-get update && \
   apt-get install -y openjdk-8-jdk && \
   rm -rf /var/lib/apt/lists/*
-
-# Install Python
-RUN \
-    apt-get update && \
-    apt-get install -y install python3.8 && \
-    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
