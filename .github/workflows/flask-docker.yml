@@ -1,8 +1,8 @@
 name: Flask Docker CI
 on:
   push:
-    branches:
-      - 'main/fyp-flask/'
+    paths:
+    - 'fyp-flask/**'
 jobs:
   build:
     runs-on: ubuntu-latest
