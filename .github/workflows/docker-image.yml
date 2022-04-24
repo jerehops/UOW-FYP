@@ -31,7 +31,7 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_REPO_FLASK }}:latest,${{ secrets.DOCKER_REPO_FLASK }}:${{github.run_number}}
 
-    - name: Build and Push Flask Frontend
+    - name: Build and Push Spark Backend
       uses: docker/build-push-action@v2.10.0
       with:
         context: ./fyp-spark/
