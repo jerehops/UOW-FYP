@@ -8,14 +8,17 @@
 
 ### Download from Docker Hub (easier)
 
-1. Download the [docker compose](docker-compose.yml) file;
+1. Download the fullstack-deployment folder;
 
 ```bash
+git clone
 
 ```
+2. Fill up the .env file inside the fullstack-deployment folder.
 
-2. Start the cluster;
+3. Start the cluster;
 
 ```bash
 docker-compose up
+
 ```
