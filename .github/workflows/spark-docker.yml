@@ -1,8 +1,8 @@
 name: Spark Docker CI
 on:
   push:
-    branches:
-      - 'main/fyp-flask/fyp-spark/'
+    paths:
+    - 'fyp-spark/**'
 jobs:
   build:
     runs-on: ubuntu-latest
