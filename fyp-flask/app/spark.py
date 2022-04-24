@@ -9,5 +9,5 @@ spark = Blueprint('spark', __name__)
 @spark.route('/movies')
 @login_required
 def defaultmovie():
-    test = test
+    test = test123
     return render_template('analyse.html')
