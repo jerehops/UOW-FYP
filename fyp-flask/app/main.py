@@ -27,18 +27,6 @@ def profile():
 def analyse():
     return render_template('analyse.html')
 
-@main.route('/entertainment')
-@login_required
-def entertainment():
-    topic = 'entertainment'
-    return render_template('analyse.html', topic=topic)
-
-@main.route('/weather')
-@login_required
-def weather():
-    topic = 'weather'
-    return render_template('analyse.html', topic=topic)
-
 @main.route('/upload')
 @login_required
 def upload():
@@ -48,7 +36,7 @@ def upload():
 @login_required
 def upload_file():
     if request.method == 'POST':
-        path = current_app.config['UPLOAD_FOLDER'] + '/' + current_user.name + '/'
+        path = current_app.config['UPLOAD_FOLDER'] + current_user.name + '/'
         isExist = os.path.exists(path)
         if not isExist:
             os.makedirs(path)
