@@ -9,15 +9,16 @@ RUN pip install -r /requirements.txt
 
 WORKDIR /spark
 # spark
-ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz ./spark.tgz
-RUN tar -xf ./spark.tgz
-RUN rm ./spark.tgz
+ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz spark.tgz
+RUN tar -xf spark.tgz
+RUN rm spark.tgz
 RUN mv spark-* spark
 COPY ./jars ./jars
 
 #COPY app.py /app.py
 WORKDIR /simple_worker
 ADD ./tasks.py .
+ADD ./script.sh .
 
 EXPOSE 8080 7077
-CMD ["/bin/bash", "celery -A tasks worker --loglevel=info"]
+ENTRYPOINT ["/bin/bash", "./script.sh"]
