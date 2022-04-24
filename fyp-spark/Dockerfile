@@ -20,4 +20,4 @@ WORKDIR /simple_worker
 ADD ./tasks.py .
 
 EXPOSE 8080 7077
-ENTRYPOINT celery -A tasks worker --loglevel=info
+CMD ["/bin/bash", "celery -A tasks worker --loglevel=info"]
