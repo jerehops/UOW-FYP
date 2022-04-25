@@ -8,6 +8,7 @@ COPY requirements.txt /
 RUN pip install -r /requirements.txt
 
 WORKDIR /spark
+ADD ./scripts/. .
 # spark
 ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz spark.tgz
 RUN tar -xf spark.tgz
