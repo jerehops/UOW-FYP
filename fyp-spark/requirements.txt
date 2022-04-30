@@ -1,4 +1,3 @@
 celery[redis]
 requests
 seaborn
-base64
