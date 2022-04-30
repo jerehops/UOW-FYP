@@ -15,5 +15,5 @@ RUN tar -xf spark.tgz
 RUN rm spark.tgz
 RUN mv spark-* spark
 
-EXPOSE 8080 7077
-CMD bin/spark-class org.apache.spark.deploy.master.Master >> logs/spark-master.out
+EXPOSE 8081
+CMD bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077 >> logs/spark-worker.out
