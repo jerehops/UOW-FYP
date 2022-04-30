@@ -5,6 +5,8 @@ WORKDIR /spark
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
+RUN rm requirements.txt
+
 RUN apt update && \
     apt install -y default-jdk && \
     rm -rf /var/lib/apt/lists/*
@@ -13,7 +15,7 @@ RUN apt update && \
 ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz spark.tgz
 RUN tar -xf spark.tgz
 RUN rm spark.tgz
-RUN mv spark-* spark
+RUN mv spark-* ../
 
 ENV SPARK_MASTER_PORT=7077 \
 SPARK_MASTER_WEBUI_PORT=8080 \
@@ -34,6 +36,5 @@ ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 COPY start-spark.sh /
-
 
 CMD ["/bin/bash", "/start-spark.sh"]
