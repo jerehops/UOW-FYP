@@ -3,11 +3,12 @@ FROM python:3.8-slim-buster
 COPY requirements.txt .
 
 RUN apt update && \
-    && pip install -r /requirements.txt \
+    pip install -r /requirements.txt && \
     apt install -y default-jdk && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /spark
+
 
 # spark
 ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz spark.tgz
