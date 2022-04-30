@@ -1,11 +1,11 @@
 FROM python:3.8-slim-buster
 
+COPY requirements.txt .
+
 RUN apt update && \
+    && pip install -r /requirements.txt \
     apt install -y default-jdk && \
     rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt /
-RUN pip install -r /requirements.txt
 
 WORKDIR /spark
 
