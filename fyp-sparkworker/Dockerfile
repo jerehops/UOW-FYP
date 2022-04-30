@@ -2,7 +2,7 @@ FROM python:3.8-slim-buster
 
 WORKDIR /spark
 
-COPY requirements.txt .
+ADD requirements.txt .
 RUN pip install -r requirements.txt
 
 RUN apt update && \
