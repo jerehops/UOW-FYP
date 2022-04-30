@@ -1,10 +1,9 @@
 FROM python:3.8-slim-buster
 
-WORKDIR /spark
+WORKDIR /
 
 ADD requirements.txt .
 RUN pip install -r requirements.txt
-
 RUN rm requirements.txt
 
 RUN apt update && \
@@ -13,9 +12,9 @@ RUN apt update && \
 
 # spark
 ADD https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz spark.tgz
-RUN tar -xf spark.tgz
-RUN rm spark.tgz
-RUN mv spark-* ../
+RUN mkdir -p /opt/spark \
+&& tar -xf spark.tgz -C /opt/spark --strip-components=1 \
+&& rm spark.tgz
 
 ENV SPARK_MASTER_PORT=7077 \
 SPARK_MASTER_WEBUI_PORT=8080 \
