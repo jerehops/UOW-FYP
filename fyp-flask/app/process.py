@@ -5,7 +5,7 @@ from flask import Blueprint, url_for, render_template, request, jsonify, redirec
 from flask_login import login_required
 logger = get_task_logger(__name__)
 process = Blueprint('process', __name__)
-celery = Celery('task', broker='redis://localhost:6379/0')
+celery = Celery('task', broker='redis://redis:6379/0')
 
 image_data = ""
 
