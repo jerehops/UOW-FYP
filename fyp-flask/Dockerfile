@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 # Define default command
 EXPOSE 8000
-ENTRYPOINT ["/bin/bash", "./script.sh"]
+ENTRYPOINT ["/bin/bash", "./app/script.sh"]
