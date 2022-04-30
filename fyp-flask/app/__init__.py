@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_cors import CORS
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -13,7 +14,7 @@ def init_db():
 
 def init_app():
     app = Flask (__name__, instance_relative_config=False)
-
+    CORS(app)
     app.config.from_object ('config.Config')
 
     db.init_app(app)
@@ -38,7 +39,7 @@ def init_app():
     app.register_blueprint(main_blueprint)
 
     # blueprint for spark parts of app
-    from .spark import spark as spark_blueprint
-    app.register_blueprint(spark_blueprint)
+    from .process import process as process_blueprint
+    app.register_blueprint(process_blueprint)
     
     return app

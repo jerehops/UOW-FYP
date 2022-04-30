@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+{% block content %}
+<h1 class="title">
+  Loading your data...
+</h1>
+<progress class="progress is-small is-danger" max="100"></progress>
+<p id="test"></p>
+<script>
+setInterval(function(){
+        $.getJSON('/refreshData', {
+        }, function(data) {
+          if(data.output){
+            window.location.href = "http://localhost:8000/results";
+          }
+        });
+   },10000);
+</script>
+{% endblock %}

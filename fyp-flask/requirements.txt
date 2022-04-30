@@ -2,5 +2,7 @@ flask
 flask-sqlalchemy
 flask-login
 flask-session
+flask-cors
 python-dotenv
 celery[redis]
+requests

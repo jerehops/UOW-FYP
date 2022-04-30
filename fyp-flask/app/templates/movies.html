@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  What would you like to find out about movies?
+</h1>
+<div class="columns is-centered" id="buttonContainer">
+<input type="button" value=" + " onClick="add();">
+<input type="button" value=" - " onClick="remove();">
+</div>
+<div class="columns is-centered" id="mainContainer">
+  <select name="file1">
+    <option value="t1">t1</option>
+    <option value="t2">t2</option>
+    <option value="t3">t3</option>
+  </select>
+</div>
+<button class="btn btn-large" id="start-bg-job">Start Spark Job</button><br><br>
+<script>
+  function start_task() {
+    // send ajax POST request to start background job
+    $.ajax({
+      type: 'POST',
+      url: '/sparktask',
+      cache: false,
+      success: function (data) {
+        window.location = data;
+      },
+      error: function () {
+        alert('Unexpected error');
+      }
+    });
+  }
+  $(function () {
+    $('#start-bg-job').click(start_task);
+  });
+  var counter=0;
+  function add() {
+    if (counter < 5) {
+      counter++;
+      // Get the main Div in which all the other divs will be added
+      var mainContainer = document.getElementById('mainContainer');
+      var newDropdown = document.createElement('select');
+      newDropdown.id = "header" + counter;
+      newDropdownOption = document.createElement("option");
+      newDropdownOption.value = "t1";
+      newDropdownOption.text = "t1";
+      newDropdown.add(newDropdownOption);
+      // Append newDiv input to the mainContainer div
+      mainContainer.appendChild(newDropdown);
+    }
+    else {
+      $.alert({
+        title: 'Error!',
+        content: 'Too many fields added',
+      });
+    }
+  }
+
+  function remove() {
+    var mainContainer = document.getElementById('mainContainer');
+    id = "header" + counter;
+    var newDropdown = document.getElementById(id);
+    if (newDropdown) {
+      mainContainer.removeChild(newDropdown);
+      counter--;
+    }
+    console.log(counter);
+  }
+
+</script>
+{% endblock %}
