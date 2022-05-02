@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_cors import CORS
+import os
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -16,7 +17,7 @@ def init_app():
     app = Flask (__name__, instance_relative_config=False)
     CORS(app)
     app.config.from_object ('config.Config')
-
+    app.config.update(SECRET_KEY=os.urandom(24))
     db.init_app(app)
 
     login_manager = LoginManager()

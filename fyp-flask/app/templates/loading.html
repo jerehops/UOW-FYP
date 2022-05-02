@@ -4,8 +4,11 @@
 <h1 class="title">
   Loading your data...
 </h1>
-<progress class="progress is-small is-danger" max="100"></progress>
-<p id="test"></p>
+<div class="columns is-centered">
+  <div class="column is-half">
+    <progress class="progress is-small is-danger" max="100"></progress>
+  <div>
+</div>
 <script>
 setInterval(function(){
         $.getJSON('/refreshData', {

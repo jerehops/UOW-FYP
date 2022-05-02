@@ -2,15 +2,176 @@
 
 {% block content %}
 <h1 class="title">
-  What would you like to find out?
+  Please select your options
 </h1>
-<a href="{{ url_for('main.movies') }}">
-	Movies
-</a>
-<a href="{{ url_for('main.movies') }}">
-	Titanic Passengers
-</a>
-<a href="{{ url_for('main.movies') }}">
-	Weather
-</a>
+<h2 class="subtitle">
+  Select your uploaded data
+</h2>
+<div class="columns is-centered">
+  <select style="width:30%;" id="datafiles" multiple>
+    <option value=""></option>
+    {% for file in fileList %}
+    <option value="{{ file }}">{{ file }}</option>
+    {% endfor %}
+  </select>
+</div>
+<h2 class="subtitle">
+  Please enter your x-axis
+</h2>
+<div class="columns is-centered">
+  <input class="input is-small" type="textbox" name="x-axis" id="x-axis" style="width: 25%;" />
+</div>
+<h2 class="subtitle">
+  Please enter your filters
+</h2>
+<input class="button is-small" id="addBtn" type="button" value=" + " onClick="addFilter();">
+<input class="button is-small" id="removeBtn" type="button" value=" - " onClick="removeFilter();" disabled>
+<br>
+<br>
+<div id="mainContainer">
+  <div class="columns is-centered">
+    <input class="input is-small" type="textbox" name="filter1" id="filter1" style="width: 25%;"
+      placeholder="filter 1" />
+  </div>
+</div>
+<br><br>
+<div class="columns is-centered">
+  <div class="column is-2">
+    <button class="button is-small" id="start-job" style="width: calc(80% - 10px);">Start Spark Job</button><br><br>
+  </div>
+  <div class="column is-2">
+    <a href="{{ url_for('main.upload') }}"><button class="button is-small"
+        style="width: calc(80% - 10px);">Upload</button>
+  </div>
+</div>
+<div class="columns is-centered">
+  <div class="column is-2">
+    <a href="{{ url_for('main.dashboard') }}"><button class="button is-small" style="width: calc(80% - 10px);">Back to
+        Start</button>
+  </div>
+</div>
+<script>
+  var counter = 1;
+  var count = 1;
+  var jsonObj = {};
+  function start_task() {
+    if (Object.keys(jsonObj).length >= 1) {
+      if ($('#x-axis').val()) {
+        jsonObj['x-axis'] = $('#x-axis').val()
+        if ($('#filter' + counter).val()) {
+          for (var i = 1; i < counter + 1; i++) {
+            jsonObj['filter' + i] = $('#filter' + i).val();
+          }
+        }
+        else {
+          jsonObj['filter1'] = 'false'
+        }
+        jsonObj['category'] = '{{name}}-upload'
+        $.ajax({
+          type: 'POST',
+          url: '/testroute',
+          cache: false,
+          data: JSON.stringify(jsonObj),
+          contentType: "application/json",
+          success: function (data) {
+            console.log(data);
+          },
+          error: function () {
+            alert('Unexpected error');
+          }
+        });
+      }
+      else {
+        $.alert({
+          title: 'Error!',
+          content: 'X-Axis is required',
+        });
+      }
+    }
+    else {
+      $.alert({
+        title: 'Error!',
+        content: 'Dataset is required!',
+      });
+    }
+  }
+  function addFilter() {
+    if (counter < 5) {
+      counter++;
+      // Get the main Div in which all the other divs will be added
+      mainContainer = document.getElementById('mainContainer');
+      newDiv = document.createElement('div');
+      newDiv.setAttribute("class", "columns is-centered");
+      newDiv.id = "column-div" + counter;
+      newInput = document.createElement("input");
+      newInput.setAttribute("type", "textbox");
+      newInput.setAttribute("class", "input is-small");
+      newInput.setAttribute("placeholder", "filter " + counter);
+      newInput.name = "filter" + counter;
+      newInput.id = "filter" + counter;
+      newInput.setAttribute("style", "width: 25%;");
+      newDiv.appendChild(newInput);
+      // Append newDiv input to the mainContainer div
+      mainContainer.appendChild(newDiv);
+      document.getElementById("removeBtn").disabled = false;
+    }
+    else {
+      $.alert({
+        title: 'Error!',
+        content: 'You are limited to 5 filters',
+      });
+    }
+  }
+
+  function removeFilter() {
+    mainContainer = document.getElementById('mainContainer');
+    newDiv = document.getElementById('column-div' + counter);
+    textBox = document.getElementById('filter' + counter)
+    //if (counter == 1) {
+    //  $.alert({
+    //    title: 'Error!',
+    //    content: 'At least 1 header is required',
+    //  });
+    //}
+    newDiv.removeChild(textBox);
+    mainContainer.removeChild(newDiv);
+    counter--;
+    if (counter == 1) {
+      document.getElementById("removeBtn").disabled = true;
+    }
+  }
+  $(function () {
+    $('#start-job').click(start_task);
+  });
+  var noFiles = '{{ fileList|length }}';
+
+  $(function () {
+    if (noFiles == 0) {
+      $("#datafiles").selectize({
+        placeholder: 'You have no files uploaded!',
+      });
+      document.getElementById("x-axis").disabled = true;
+      document.getElementById("start-job").disabled = true;
+      document.getElementById("filter1").disabled = true;
+      document.getElementById("addBtn").disabled = true;
+    }
+    else
+      $("#datafiles").selectize({
+        plugins: ["remove_button"],
+        persist: false,
+        onItemAdd: function (value) {
+          jsonObj['dataset' + count] = value;
+          count++;
+        },
+        onItemRemove: function (value) {
+          for (i = 0; i <= Object.keys(jsonObj).length + 1; i++) {
+            if (jsonObj['dataset' + i] == value) {
+              delete jsonObj['dataset' + i]
+            }
+          }
+          count--;
+        }
+      });
+  });
+</script>
 {% endblock %}

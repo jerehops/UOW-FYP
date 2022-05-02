@@ -1,9 +1,9 @@
 import os
-
 from sqlalchemy import false, true
-from flask import Blueprint, render_template, request, flash, redirect, current_app
+from flask import Blueprint, render_template, request, flash, redirect, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from wtforms import SelectMultipleField
 from . import db
 
 main = Blueprint('main', __name__)
@@ -27,22 +27,17 @@ def index():
         
 @main.route('/dashboard')
 @login_required
-def profile():
+def dashboard():
     return render_template('dashboard.html', name=current_user.name)
 
 #####################################
-## Submit Spark Task
+## Routes for default data
 #####################################
 
-@main.route('/submit')
+@main.route('/options')
 @login_required
-def submit():
-    return render_template('movies.html')
-
-@main.route('/analyse')
-@login_required
-def analyse():
-    return render_template('analyse.html')
+def options():
+    return render_template('options.html')
 
 @main.route('/movies')
 @login_required
@@ -67,18 +62,34 @@ def upload_file():
         if not isExist:
             os.makedirs(path)
         if 'files[]' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            res = jsonify({'message' : 'No file part in the request'})
+            return res
         files = request.files.getlist('files[]')
         for file in files:
             if not allowed_file(file.filename):
                 filecheck = false
-                flash('Only CSV is allowed')
-                return redirect('/upload')
+                res = jsonify({'message' : 'Only CSV is allowed'})
+                return res
+            else: 
+                filecheck = true
         if (filecheck):
             for file in files:
                 if file and allowed_file(file.filename):
+                    print("uploading")
                     filename = secure_filename(file.filename)
                     file.save(path + filename)
-                    flash('File successfully uploaded')
-            return redirect('/upload')
+                    success = True
+        if success:
+            print('error here?')
+            res = jsonify({'message' : 'Files successfully uploaded'})
+            return res
+
+#####################################
+## Routes uploaded data
+#####################################
+
+@main.route('/analyse')
+@login_required
+def analyse():
+    fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + current_user.name + '/')
+    return render_template('analyse.html', fileList=fileList, name=current_user.name)

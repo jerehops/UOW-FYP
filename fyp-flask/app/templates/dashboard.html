@@ -7,11 +7,12 @@
 <h2 class="subtitle">
 	Lets Begin! Analyse our data or upload yours!
 </h2>
-<a href="{{ url_for('main.analyse') }}">
-	Analyse our data!
-</a>
-<br>
-<a href="{{ url_for('main.upload') }}">
-	Upload and analyse your own
-</a>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<a href="{{ url_for('main.options') }}"><button class="button is-small" style="width: calc(80% - 10px);">Our Data</button>
+	</div>
+	<div class="column is-2">
+		<a href="{{ url_for('main.upload') }}"><button class="button is-small" style="width: calc(80% - 10px);">Your Data</button>
+	</div>
+</div>
 {% endblock %}

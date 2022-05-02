@@ -4,25 +4,89 @@
 <h1 class="title">
   What would you like to find out about movies?
 </h1>
-<div class="columns is-centered" id="buttonContainer">
-<input type="button" value=" + " onClick="add();">
-<input type="button" value=" - " onClick="remove();">
-</div>
-<div class="columns is-centered" id="mainContainer">
-  <select name="file1">
-    <option value="t1">t1</option>
-    <option value="t2">t2</option>
-    <option value="t3">t3</option>
+<h2 class="subtitle">
+	Select your X-Axis
+</h2>
+<div class="columns is-centered">
+  <select class="select" name="x-axis" id="x-axis">
+    <option value="" disabled selected>Select Your X-Axis</option>
+    <option value="Title">Title</option>
+    <option value="Genres">Genres</option>
+    <option value="Rating">Rating</option>
   </select>
 </div>
-<button class="btn btn-large" id="start-bg-job">Start Spark Job</button><br><br>
+<h2 class="subtitle">
+	Select your filters
+</h2>
+<input class="button is-small" type="button" value=" + " onClick="addFile();">
+<input class="button is-small" type="button" value=" - " onClick="removeFile();">
+<br>
+<br>
+<div id="mainContainer">
+  <div class="columns is-centered" id="column-div1">
+    <select class="select is-small" name="filter1" id="filter1" required onchange="showfield(1);">
+      <option value="" disabled selected>Select Filter</option>
+      <option value="Title">Title</option>
+      <option value="Genres">Genres</option>
+      <option value="Rating">Rating</option>
+    </select>
+    <input class="input is-small" type="textbox" name="input1" id="input1" style="visibility:hidden; width: 25%;"/>
+  </div>
+</div>
+<br><br>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<button class="button is-small" id="start-job" style="width: calc(80% - 10px);">Start Spark Job</button>
+	</div>
+</div>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<a href="{{ url_for('main.options') }}"><button class="button is-small" style="width: calc(80% - 10px);">Back to Options</button>
+	</div>
+</div>
 <script>
+  var counter = 1;
+  function test_task() {
+    var jsonObj = {};
+    jsonObj['category'] = 'Movies'
+    if ($('#x-axis option:selected').val()) {
+      jsonObj['x-axis'] = $('#x-axis option:selected').val()
+      if ($('#filter'+counter+' option:selected').val() && $('#input'+counter).val()) {
+        for (var i = 1; i < counter+1; i++) {
+          jsonObj['filter'+i] = $('#input'+i).val();
+        }
+      }
+      else jsonObj['filter1'] = 'false'
+      console.log(jsonObj);
+      $.ajax({
+        type: 'POST',
+        url: '/testroute',
+        cache: false,
+        data: JSON.stringify(jsonObj),
+        contentType: "application/json",
+        success: function (data) {
+          console.log(data);
+        },
+        error: function () {
+          alert('Unexpected error');
+        }
+      });
+    }
+    else {
+      $.alert({
+        title: 'Error!',
+        content: 'X-Axis is required',
+      });
+    }
+  }
   function start_task() {
     // send ajax POST request to start background job
     $.ajax({
       type: 'POST',
       url: '/sparktask',
       cache: false,
+      data: {
+      },
       success: function (data) {
         window.location = data;
       },
@@ -32,22 +96,43 @@
     });
   }
   $(function () {
-    $('#start-bg-job').click(start_task);
+    $('#start-job').click(start_task);
   });
-  var counter=0;
-  function add() {
-    if (counter < 5) {
+  var options = ["Title", "Genres", "Rating"];
+  function addFile() {
+    if (counter < 3) {
       counter++;
       // Get the main Div in which all the other divs will be added
-      var mainContainer = document.getElementById('mainContainer');
-      var newDropdown = document.createElement('select');
-      newDropdown.id = "header" + counter;
+      mainContainer = document.getElementById('mainContainer');
+      newDiv = document.createElement('div');
+      newDiv.setAttribute("class","columns is-centered");
+      newDiv.id = "column-div" + counter;
+      newDropdown = document.createElement('select');
+      newDropdown.setAttribute("class","select is-small");
+      newDropdown.setAttribute("onchange", "showfield("+counter+");");
+      newDropdown.name = "filter" + counter;
+      newDropdown.id = "filter" + counter;
       newDropdownOption = document.createElement("option");
-      newDropdownOption.value = "t1";
-      newDropdownOption.text = "t1";
+      newDropdownOption.setAttribute("disabled", "");
+      newDropdownOption.setAttribute("selected", "");
+      newDropdownOption.text = "Select Filter";
       newDropdown.add(newDropdownOption);
+      for (const item of options) {
+        newDropdownOption = document.createElement("option");
+        newDropdownOption.text = item;
+        newDropdownOption.value = item;
+        newDropdown.add(newDropdownOption);
+      }
+      newInput = document.createElement("input");
+      newInput.setAttribute("type", "textbox");
+      newInput.setAttribute("class", "input is-small");
+      newInput.name = "input" + counter;
+      newInput.id = "input" + counter;
+      newInput.setAttribute("style", "visibility:hidden; width: 25%;");
+      newDiv.appendChild(newDropdown);
+      newDiv.appendChild(newInput);
       // Append newDiv input to the mainContainer div
-      mainContainer.appendChild(newDropdown);
+      mainContainer.appendChild(newDiv);
     }
     else {
       $.alert({
@@ -57,16 +142,32 @@
     }
   }
 
-  function remove() {
-    var mainContainer = document.getElementById('mainContainer');
-    id = "header" + counter;
-    var newDropdown = document.getElementById(id);
-    if (newDropdown) {
-      mainContainer.removeChild(newDropdown);
+  function removeFile() {
+    mainContainer = document.getElementById('mainContainer');
+    newDiv = document.getElementById('column-div' + counter);
+    textBox = document.getElementById('input'+counter)
+    console.log(newDiv);
+    id = "filter" + counter;
+    newDropdown = document.getElementById(id);
+    console.log(newDropdown);
+    if (counter == 1) {
+      $.alert({
+        title: 'Error!',
+        content: 'At least 1 header is required',
+      });
+    }
+    else if (newDropdown) {
+      newDiv.removeChild(textBox);
+      newDiv.removeChild(newDropdown);
+      mainContainer.removeChild(newDiv);
       counter--;
     }
-    console.log(counter);
   }
 
+  function showfield(value){
+    if (value) {
+      document.getElementById('input'+value).style.visibility='visible'
+    }
+  }
 </script>
 {% endblock %}

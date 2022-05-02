@@ -24,6 +24,8 @@ services:
       - redis
     image: jerehops/fyp-flask:10
     container_name: celery
+    volumes:
+      - scripts:/opt/scripts
     command: celery -A app.process worker --loglevel=info
   redis:
     image: redis:6-alpine
@@ -38,7 +40,6 @@ services:
       - 7077:7077
     volumes:
       - data:/opt/data/uploads
-      - scripts:/opt/scripts
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
@@ -50,7 +51,6 @@ services:
       - "7000:7000"
     volumes:
       - data:/opt/data/uploads
-      - scripts:/opt/scripts
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
@@ -69,7 +69,6 @@ services:
       - "7001:7000"
     volumes:
       - data:/opt/data/uploads
-      - scripts:/opt/scripts
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
@@ -88,7 +87,6 @@ services:
       - "7002:7000"
     volumes:
       - data:/opt/data/uploads
-      - scripts:/opt/scripts
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1

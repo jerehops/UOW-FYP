@@ -1,4 +1,7 @@
-import os
+import os, json
+from unicodedata import name
+
+from click import argument
 from celery import Celery
 from celery.utils.log import get_task_logger
 from flask import Blueprint, url_for, render_template, request, jsonify, redirect
@@ -14,6 +17,20 @@ image_data = ""
 def sparktask():
     spark_job_task.apply_async()
     return url_for('process.loading')
+
+@process.route('/testroute', methods=['GET','POST'])
+@login_required
+def testroute():
+    if request.method == 'POST':
+        print("testroute")
+        data = json.loads(request.data)
+        test_task(data)
+        return jsonify({'success': 'true'})
+
+def test_task(data):
+    print(json.dumps(data))
+    return {'status': 'Task completed!'} 
+
 
 @process.route('/loading')
 def loading():
@@ -35,6 +52,7 @@ def refresh_data():
     return jsonify(output=image_data)
 
 @process.route('/results', methods=['GET','POST'])
+@login_required
 def results():
     global image_data
     return render_template('results.html', image_data=image_data)
@@ -43,8 +61,8 @@ def results():
 def spark_job_task(self):
 
     task_id = self.request.id
-
-    master_path = 'local[2]'
+    
+    master_path = 'local[*]'
 
     spark_code_path = '~/es_spark_test.py'
 

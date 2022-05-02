@@ -1,21 +1,104 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Upload your data!
-</h1>
-<form method="post" action="/upload" enctype="multipart/form-data">
-	<input type="file" name="files[]" multiple="true" autocomplete="off" required>
-    <br><br>
-    <input type = "submit" value="Submit">
-</form>
-{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class="notification is-danger">
-		{% for message in messages %}
-		  <li>{{ messages[0] }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
+<div class="columns is-centered">
+	<h1 class="title">
+		Upload your data!
+	</h1>
+</div>
+<br>
+<div class="columns is-centered">
+	<div id="uploads" class="file has-name">
+		<label class="file-label">
+		  <input class="file-input" type="file" id="multiFiles" name="files[]" multiple="true" autocomplete="off" required>
+		  <span class="file-cta">
+			<span class="file-icon">
+			  <i class="fas fa-upload"></i>
+			</span>
+			<span class="file-label">
+			  Choose a file…
+			</span>
+		  </span>
+		  <span class="file-name" id="uploadedFiles">
+			No files selected
+		  </span>
+		</label>
+	  </div>
+</div>
+<div class="columns is-centered">
+	<br>
+	  <span id="msg"></span>
+	<br>
+</div>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<button class="button is-small" id="uploadBtn" style="width: calc(80% - 10px);">Upload</button>
+	</div>
+	<div class="column is-2">
+		<a href="{{ url_for('main.analyse') }}"><button class="button is-small" id="analyseBtn" style="width: calc(80% - 10px);">Analyse</button>
+	</div>
+</div>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<a href="{{ url_for('main.dashboard') }}"><button class="button is-small" id="analyseBtn" style="width: calc(80% - 10px);">Back</button>
+	</div>
+</div>	  
+<div id="pbdiv" class="columns is-centered" style="visibility:hidden;">
+	<div class="column is-half">
+	  <progress class="progress is-small is-danger" max="100"></progress>
+	<div>
+</div>
+
+<script>
+	const fileInput = document.querySelector('#uploads input[type=file]');
+  	fileInput.onchange = () => {
+    	if (fileInput.files.length > 0) {
+      		const fileName = document.querySelector('#uploads .file-name');
+      		fileName.textContent = fileInput.files.length + " files selected";
+    	}
+  	}
+	$(document).ready(function (e) {
+		$('#uploadBtn').on('click', function () {
+			var form_data = new FormData();
+			var input = document.getElementById('multiFiles').files.length;
+			if(input == 0) {
+				$('#msg').html('<span style="color:red">Select at least one file</span>');
+				return;
+			}
+			document.getElementById("uploadBtn").disabled = true;
+			for (var x = 0; x < input; x++) {
+				form_data.append("files[]", document.getElementById('multiFiles').files[x]);
+			}
+			document.getElementById('pbdiv').style.visibility='visible'
+			$.ajax({
+				type: 'POST',
+				url: '/upload',
+				dataType: 'json',
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				success: function (response) { // display success response
+					$('#msg').html('');
+					$.each(response, function (key, data) {							
+						if(key !== 'message') {
+							document.getElementById('pbdiv').style.visibility='hidden'
+							const fileName = document.querySelector('#uploads .file-name');
+      						fileName.textContent = key + ' -> ' + data;
+							document.getElementById("uploadBtn").disabled = false;
+						} else {
+							const fileName = document.querySelector('#uploads .file-name');
+      						fileName.textContent = data;
+							document.getElementById('pbdiv').style.visibility='hidden'
+							document.getElementById("uploadBtn").disabled = false;
+						}
+					})
+				},
+				error: function (response) {
+					$('#msg').html(response.message); // display error response
+				}
+			});
+		});
+	});
+</script>
 {% endblock %}

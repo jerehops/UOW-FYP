@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  What would you like to find out?
+</h1>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<a href="{{ url_for('main.movies') }}"><button class="button is-small" id="analyse" style="width: calc(80% - 10px);">Movies</button>
+	</div>
+</div>
+<div class="columns is-centered">
+	<div class="column is-2">
+		<a href="{{ url_for('main.dashboard') }}"><button class="button is-small" id="analyse" style="width: calc(80% - 10px);">Back</button>
+	</div>
+</div>
+{% endblock %}
