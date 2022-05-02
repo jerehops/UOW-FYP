@@ -22,3 +22,8 @@ git clone
 docker-compose up
 
 ```
+If his doesn't work, add Sudo .
+```bash
+sudo docker-compose up
+
+```
