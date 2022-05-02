@@ -91,5 +91,8 @@ def upload_file():
 @main.route('/analyse')
 @login_required
 def analyse():
-    fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + current_user.name + '/')
+    fileList = []
+    path = current_app.config['UPLOAD_FOLDER'] + current_user.name + '/'
+    if (os.path.exists(path)):
+        fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + current_user.name + '/')
     return render_template('analyse.html', fileList=fileList, name=current_user.name)
