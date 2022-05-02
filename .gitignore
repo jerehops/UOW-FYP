@@ -130,3 +130,6 @@ dmypy.json
 
 #sqllite
 *.db
+
+#randomfolders
+/data
