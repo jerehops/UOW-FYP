@@ -14,9 +14,8 @@
 git clone
 
 ```
-2. Fill up the .env file inside the fullstack-deployment folder.
 
-3. Start the cluster;
+2. Start the cluster;
 
 ```bash
 docker-compose up
