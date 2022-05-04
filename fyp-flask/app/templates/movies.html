@@ -67,8 +67,9 @@
         success: function (data) {
           console.log(data);
         },
-        error: function () {
-          alert('Unexpected error');
+        error: function (data) {
+          alert("You're not logged in. Please sign in again");
+          window.location.href = "/login"
         }
       });
     }
@@ -90,8 +91,8 @@
       success: function (data) {
         window.location = data;
       },
-      error: function () {
-        alert('Unexpected error');
+      error: function (data) {
+        alert("You're not logged in. Please sign in again");
       }
     });
   }

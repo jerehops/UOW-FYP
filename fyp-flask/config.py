@@ -12,6 +12,6 @@ class Config:
   WTF_CSRF_ENABLED = False
   MAX_CONTENT_LENGTH = 16 * 1024 * 1024
   DATABASE_URI = path.join(base_dir + '/app/database/user.db')
-  UPLOAD_FOLDER = path.join(base_dir + '/data/uploads/')
-  DEFAULT_FOLDER = path.join(base_dir + '/app/data/default/')
+  UPLOAD_FOLDER = path.join('opt/data/uploads/')
+  DEFAULT_FOLDER = path.join('opt/data/default/')
   ALLOWED_EXTENSIONS = set(['csv'])

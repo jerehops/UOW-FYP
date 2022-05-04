@@ -37,8 +37,8 @@ def get_columns_value(df):
     return unique_value_dictionary
 
 ## this one dynamic
-movie_df = load_csv_file("/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv")
-ratings_df = load_csv_file("/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv")
+movie_df = load_csv_file("opt/app/data/default/movies.csv")
+ratings_df = load_csv_file("opt/app/data/default/ratings.csv")
 movie_rating_df = movie_df.join(ratings_df, 'movieId', 'left')
 movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
 

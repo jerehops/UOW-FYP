@@ -5,18 +5,20 @@ from click import argument
 from celery import Celery
 from celery.utils.log import get_task_logger
 from flask import Blueprint, url_for, render_template, request, jsonify, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 logger = get_task_logger(__name__)
 process = Blueprint('process', __name__)
-celery = Celery('task', broker='redis://redis:6379/0')
+celery = Celery('task', broker='redis://localhost:6379/0')
 
 image_data = ""
 
 @process.route('/sparktask', methods=['GET','POST'])
-@login_required
 def sparktask():
-    spark_job_task.apply_async()
-    return url_for('process.loading')
+    if current_user.is_authenticated:
+        spark_job_task.apply_async()
+        return url_for('process.loading')
+    else:
+        return jsonify({'Error': 'User is not authenticated'}), 400ls
 
 @process.route('/testroute', methods=['GET','POST'])
 @login_required
@@ -33,6 +35,7 @@ def test_task(data):
 
 
 @process.route('/loading')
+@login_required
 def loading():
     global image_data
     image_data = ""
@@ -47,6 +50,7 @@ def update_data():
     return "success", 201
 
 @process.route('/refreshData')
+@login_required
 def refresh_data():
     global image_data
     return jsonify(output=image_data)
@@ -62,9 +66,9 @@ def spark_job_task(self):
 
     task_id = self.request.id
     
-    master_path = 'local[*]'
+    master_path = 'spark://spark-master:7077'
 
-    spark_code_path = '~/es_spark_test.py'
+    spark_code_path = '/opt/scripts/spark_test.py'
 
     os.system("~/spark/bin/spark-submit --master %s %s %s" % 
         (master_path, spark_code_path, task_id))

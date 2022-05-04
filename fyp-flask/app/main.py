@@ -75,12 +75,10 @@ def upload_file():
         if (filecheck):
             for file in files:
                 if file and allowed_file(file.filename):
-                    print("uploading")
                     filename = secure_filename(file.filename)
                     file.save(path + filename)
                     success = True
         if success:
-            print('error here?')
             res = jsonify({'message' : 'Files successfully uploaded'})
             return res
 
