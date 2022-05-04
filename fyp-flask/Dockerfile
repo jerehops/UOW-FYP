@@ -12,9 +12,10 @@ RUN pip install -r requirements.txt \
 
 RUN echo "show current directory"
 RUN pwd
+RUN ls
 
 WORKDIR /opt/scripts
-RUN mv ./app/spark_test.py ./opt/scripts/spark_test.py
+RUN mv /scripts/spark_test.py opt/scripts/spark_test.py
 
 
 WORKDIR /opt/data/default
