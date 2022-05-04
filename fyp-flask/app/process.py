@@ -68,7 +68,7 @@ def spark_job_task(self):
     
     master_path = 'spark://spark-master:7077'
 
-    spark_code_path = 'app/scripts/spark_test.py'
+    spark_code_path = 'scripts/spark_test.py'
 
     os.system("spark-submit --master %s %s %s" % 
         (master_path, spark_code_path, task_id))
