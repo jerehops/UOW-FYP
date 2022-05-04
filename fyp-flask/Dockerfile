@@ -7,10 +7,11 @@ COPY . .
 RUN pip install -r requirements.txt
 
 RUN mkdir -p /opt/scripts \
-&& mv spark_test.py /opt/scripts/spark_test.py
+&& mv /app/spark_test.py opt/scripts/spark_test.py
 
 RUN wget https://files.grouplens.org/datasets/movielens/ml-latest.zip -O movie.zip \
-&& unzip movie.zip -j -d movie \
+&& mkdir -p opt/data/default/ \
+&& unzip movie.zip -j -d opt/data/default/movie \
 && rm movie.zip
 
 # Define default command
