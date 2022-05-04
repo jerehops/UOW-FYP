@@ -36,4 +36,4 @@ ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 COPY start-spark.sh /opt/spark/bin
 
-CMD ["/bin/bash", "/start-spark.sh"]
+CMD ["/bin/bash", "/opt/spark/bin/start-spark.sh"]
