@@ -4,14 +4,17 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt \
+&& mkdir -p /opt/scripts \
+&& mkdir -p opt/data/default
 
-RUN mkdir -p /opt/scripts \
-&& mv /app/spark_test.py opt/scripts/spark_test.py
+WORKDIR /opt/scripts
+RUN mv ./app/spark_test.py ./opt/scripts/spark_test.py
+
+WORKDIR /opt/data/default
 
 RUN wget https://files.grouplens.org/datasets/movielens/ml-latest.zip -O movie.zip \
-&& mkdir -p opt/data/default/ \
-&& unzip movie.zip -j -d opt/data/default/movie \
+&& unzip movie.zip -j -d movie \
 && rm movie.zip
 
 # Define default command
