@@ -18,8 +18,8 @@ RUN mv ./scripts/spark_test.py opt/scripts
 
 WORKDIR /opt/data/default
 
-RUN wget https://files.grouplens.org/datasets/movielens/ml-latest.zip -O movie.zip \
-&& unzip movie.zip -j -d movie \
+ADD https://files.grouplens.org/datasets/movielens/ml-latest.zip movie.zip 
+RUN unzip movie.zip -j -d movie \
 && rm movie.zip
 
 # Define default command
