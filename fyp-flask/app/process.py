@@ -18,7 +18,7 @@ def sparktask():
         spark_job_task.apply_async()
         return url_for('process.loading')
     else:
-        return jsonify({'Error': 'User is not authenticated'}), 400ls
+        return jsonify({'Error': 'User is not authenticated'}), 400
 
 @process.route('/testroute', methods=['GET','POST'])
 @login_required
