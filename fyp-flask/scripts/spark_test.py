@@ -37,8 +37,8 @@ def get_columns_value(df):
     return unique_value_dictionary
 
 ## this one dynamic
-movie_df = load_csv_file("/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv")
-ratings_df = load_csv_file("/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv")
+movie_df = load_csv_file("opt/data/default/movie/movies.csv")
+ratings_df = load_csv_file("opt/data/default/movie/ratings.csv")
 movie_rating_df = movie_df.join(ratings_df, 'movieId', 'left')
 movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
 
@@ -59,7 +59,7 @@ def create_dataframe (dataframe, x_axis, filtering):
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
     request_data = {"image": myimg}
-    url = "http://localhost:8000/updateData"
+    url = "http://flask:8000/updateData"
     requests.post(url, data=request_data)
 
 create_dataframe(movie_rating_df , 'rating' , {"genres": "Action|Comedy"})
