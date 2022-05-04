@@ -25,7 +25,7 @@ ADD https://files.grouplens.org/datasets/movielens/ml-latest.zip movie.zip
 RUN unzip -j movie.zip -d movie \
 && rm movie.zip
 
-RUN apt remove unzip
+RUN apt remove unzip -y
 
 # Define default command
 EXPOSE 8000
