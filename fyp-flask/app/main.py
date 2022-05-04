@@ -3,7 +3,6 @@ from sqlalchemy import false, true
 from flask import Blueprint, render_template, request, flash, redirect, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from wtforms import SelectMultipleField
 from . import db
 
 main = Blueprint('main', __name__)

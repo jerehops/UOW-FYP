@@ -3,7 +3,7 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:25
+    image: jerehops/fyp-flask:26
     container_name: flask
     command: flask run --host=0.0.0.0
     ports:
@@ -22,7 +22,7 @@ services:
   celery:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:25
+    image: jerehops/fyp-flask:26
     container_name: celery
     volumes:
       - scripts:/opt/scripts
