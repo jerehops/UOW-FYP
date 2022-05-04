@@ -1,4 +1,5 @@
 from os import environ, path
+import os
 base_dir = path.abspath(path.dirname(__file__))
 
 class Config:
