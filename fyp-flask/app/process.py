@@ -73,4 +73,4 @@ def spark_job_task(self):
     os.system("spark-submit --master %s %s %s" % 
         (master_path, spark_code_path, task_id))
 
-    return {'status': 'Task completed!'} 
+    return {'status': 'Task completed!'}

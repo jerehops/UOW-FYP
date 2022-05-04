@@ -1,7 +1,9 @@
 FROM python:3.8-slim-buster
 
-RUN apt-get update && \
-apt install unzip
+RUN apt-get update \
+&& apt install unzip \
+&& apt install -y default-jdk \
+&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

@@ -3,13 +3,14 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:29
+    image: jerehops/fyp-flask:31
     container_name: flask
-    command: flask run --host=0.0.0.0
+    entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
     ports:
       - 8000:8000
     volumes:
-      - data:/opt/data
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
     healthcheck:
       test:
         [
@@ -22,10 +23,8 @@ services:
   celery:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:29
+    image: jerehops/fyp-flask:31
     container_name: celery
-    volumes:
-      - scripts:/opt/scripts
     command: celery -A app.process worker --loglevel=info
   redis:
     image: redis:6-alpine
@@ -39,7 +38,8 @@ services:
       - 8080:8080
       - 7077:7077
     volumes:
-      - data:/opt/data
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
@@ -50,7 +50,8 @@ services:
       - "9091:8080"
       - "7000:7000"
     volumes:
-      - data:/opt/data
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
@@ -68,7 +69,8 @@ services:
       - "9092:8080"
       - "7001:7000"
     volumes:
-      - data:/opt/data
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
@@ -86,7 +88,8 @@ services:
       - "9093:8080"
       - "7002:7000"
     volumes:
-      - data:/opt/data
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
@@ -98,7 +101,7 @@ services:
     depends_on:
       - spark-master
 volumes:
-  data:
+  defaultdata:
     driver: local
-  scripts:
+  uploaddata:
     driver: local

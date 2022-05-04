@@ -1,9 +1,5 @@
 FROM python:3.8-slim-buster
 
-ADD requirements.txt .
-RUN pip install -r requirements.txt
-RUN rm requirements.txt
-
 RUN apt update && \
     apt install -y default-jdk && \
     rm -rf /var/lib/apt/lists/*
