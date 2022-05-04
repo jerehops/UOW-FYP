@@ -7,15 +7,9 @@ RUN echo "Setting app directory"
 RUN echo "Install requirements and set up folders"
 COPY . .
 RUN pip install -r requirements.txt \
-&& mkdir -p /opt/scripts \
-&& mkdir -p opt/data/default
-
-RUN echo "show current directory"
-RUN pwd
-RUN ls
-
-WORKDIR /opt/scripts
-RUN mv /scripts/spark_test.py opt/scripts/spark_test.py
+&& mkdir -p opt/scripts \
+&& mkdir -p opt/data/default \
+&& mv /scripts/spark_test.py opt/scripts/spark_test.py
 
 
 WORKDIR /opt/data/default
