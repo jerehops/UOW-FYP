@@ -3,7 +3,7 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:10
+    image: jerehops/fyp-flask:24
     container_name: flask
     command: flask run --host=0.0.0.0
     ports:

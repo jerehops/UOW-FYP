@@ -34,6 +34,6 @@ touch $SPARK_WORKER_LOG && \
 ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
-COPY start-spark.sh /
+COPY start-spark.sh /opt/spark/bin
 
 CMD ["/bin/bash", "/start-spark.sh"]
