@@ -14,7 +14,7 @@ setInterval(function(){
         $.getJSON('/refreshData', {
         }, function(data) {
           if(data.output){
-            window.location.href = "/results";
+            window.location.href = data.url;
           }
         });
    },20000);
