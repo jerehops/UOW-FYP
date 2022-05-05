@@ -20,14 +20,14 @@ def before_app():
 @main.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template('dashboard.html', name=current_user.name)
+        return render_template('dashboard.html', fName=current_user.firstname, lName=current_user.lastname)
     else:
         return render_template('index.html')
         
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', name=current_user.name)
+    return render_template('dashboard.html', fName=current_user.firstname, lName=current_user.lastname)
 
 #####################################
 ## Routes for default data
@@ -56,7 +56,7 @@ def upload():
 @login_required
 def upload_file():
     if request.method == 'POST':
-        path = current_app.config['UPLOAD_FOLDER'] + current_user.name + '/'
+        path = current_app.config['UPLOAD_FOLDER'] + str(current_user.id) + '/'
         isExist = os.path.exists(path)
         if not isExist:
             os.makedirs(path)
@@ -89,7 +89,7 @@ def upload_file():
 @login_required
 def analyse():
     fileList = []
-    path = current_app.config['UPLOAD_FOLDER'] + current_user.name + '/'
+    path = current_app.config['UPLOAD_FOLDER'] + str(current_user.id) + '/'
     if (os.path.exists(path)):
-        fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + current_user.name + '/')
-    return render_template('analyse.html', fileList=fileList, name=current_user.name)
+        fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + str(current_user.id) + '/')
+    return render_template('analyse.html', fileList=fileList, id=str(current_user.id))

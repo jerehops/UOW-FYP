@@ -50,8 +50,7 @@ def update_data():
 @login_required
 def refresh_data():
     global image_data
-    url = "return url_for('process.loading')"
-    return jsonify(output=image_data, url=url)
+    return jsonify(output=image_data, url=url_for('process.results'))
 
 @process.route('/results', methods=['GET','POST'])
 @login_required

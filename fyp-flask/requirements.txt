@@ -8,3 +8,4 @@ celery[redis]
 requests
 pyspark
 seaborn
+password_strength
