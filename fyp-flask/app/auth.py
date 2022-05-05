@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
 from . import db
 
@@ -24,6 +24,7 @@ def login_post():
         return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
 
     # if the above check passes, then we know the user has the right credentials
+    user.authenticated = True
     login_user(user, remember=remember)
     return redirect(url_for('main.dashboard'))
 
@@ -52,10 +53,14 @@ def signup_post():
     if user: # if a user is found, we want to redirect back to signup page so user can try again
         flash('Email address already exists')
         return redirect(url_for('auth.signup'))
-    return redirect(url_for('auth.login'))
+    else:
+        flash('Account created, please log in')
+        return redirect(url_for('auth.login'))
 
 @auth.route('/logout')
 @login_required
 def logout():
+    user = current_user
+    user.authenticated = False
     logout_user()
     return redirect(url_for('main.index'))
