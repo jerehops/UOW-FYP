@@ -1,7 +1,4 @@
 import os, json
-from unicodedata import name
-
-from click import argument
 from celery import Celery
 from celery.utils.log import get_task_logger
 from flask import Blueprint, url_for, render_template, request, jsonify, redirect
