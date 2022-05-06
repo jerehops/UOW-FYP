@@ -11,11 +11,11 @@
 1. Download the fullstack-deployment folder;
 
 ```bash
-git clone
+curl https://raw.githubusercontent.com/jerehops/fyp-flask/main/deployment/docker-compose.yaml -O 
 
 ```
 
-2. Start the cluster;
+2. Start the cluster (Please use docker compose 2);
 
 ```bash
 docker-compose up
