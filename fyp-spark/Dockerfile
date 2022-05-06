@@ -1,5 +1,7 @@
 FROM python:3.8-slim-buster
 
+ENV TZ="Asia/Singapore"
+
 RUN apt update && \
     apt install -y default-jdk && \
     rm -rf /var/lib/apt/lists/*
