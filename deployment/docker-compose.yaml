@@ -1,0 +1,110 @@
+version: "2.2"
+services:
+  flask-app:
+    depends_on:
+      - redis
+    image: jerehops/fyp-flask:49
+    container_name: flask
+    entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
+    ports:
+      - 8000:8000
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:8000 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+  celery:
+    depends_on:
+      - redis
+    image: jerehops/fyp-flask:49
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    container_name: celery
+    command: celery -A app.process worker --loglevel=info
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+  spark-master:
+    image: jerehops/fyp-spark:24
+    container_name: spark-master
+    ports:
+      - 8080:8080
+      - 7077:7077
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+  spark-worker-1:
+    image: jerehops/fyp-spark:24
+    container_name: spark-worker-1
+    ports:
+      - "9091:8080"
+      - "7000:7000"
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=2G
+      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-1
+    depends_on:
+      - spark-master
+  spark-worker-2:
+    image: jerehops/fyp-spark:24
+    container_name: spark-worker-2
+    ports:
+      - "9092:8080"
+      - "7001:7000"
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=2G
+      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-2
+    depends_on:
+      - spark-master
+  spark-worker-3:
+    image: jerehops/fyp-spark:24
+    container_name: spark-worker-3
+    ports:
+      - "9093:8080"
+      - "7002:7000"
+    volumes:
+      - defaultdata:/opt/data/default
+      - uploaddata:/opt/data/default
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=2G
+      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-3
+    depends_on:
+      - spark-master
+volumes:
+  defaultdata:
+    driver: local
+  uploaddata:
+    driver: local
