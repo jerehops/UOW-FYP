@@ -1,8 +1,9 @@
 import os
-from sqlalchemy import false, true
+from sqlalchemy import false, true, desc
 from flask import Blueprint, render_template, request, flash, redirect, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from .models import History
 from . import db
 
 main = Blueprint('main', __name__)
@@ -93,3 +94,12 @@ def analyse():
     if (os.path.exists(path)):
         fileList = os.listdir(current_app.config['UPLOAD_FOLDER'] + str(current_user.id) + '/')
     return render_template('analyse.html', fileList=fileList, id=str(current_user.id))
+
+#####################################
+## Routes historic data
+#####################################
+
+@main.route('/history')
+def history():
+    data_query = History.query.filter_by(user_id=1).order_by(History.id.desc()).limit(10).all()
+    return render_template('history.html', data=data_query)

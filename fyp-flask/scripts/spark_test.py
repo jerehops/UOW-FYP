@@ -1,8 +1,11 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-import requests, base64, io
+import requests, base64, io, sys
+from datetime import datetime
 import seaborn as sns
+
+user_id = sys.argv[1]
 
 # create spark configuration
 spark_conf = SparkConf().setAppName("Media analytic")
@@ -39,6 +42,8 @@ def get_columns_value(df):
 ## this one dynamic
 movie_df = load_csv_file("/opt/data/default/movie/movies.csv")
 ratings_df = load_csv_file("/opt/data/default/movie/ratings.csv")
+#movie_df = load_csv_file("/d/ubuntu/projects/fyp/workingfolder/movies.csv")
+#ratings_df = load_csv_file("/d/ubuntu/projects/fyp/workingfolder/ratings.csv")
 movie_rating_df = movie_df.join(ratings_df, 'movieId', 'left')
 movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
 
@@ -58,8 +63,9 @@ def create_dataframe (dataframe, x_axis, filtering):
     fig.savefig(s, format='jpg')
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
-    request_data = {"image": myimg}
+    request_data = {"image": myimg, "user_id": user_id, "timestamp":(datetime.now().strftime("%d-%m-%Y, %H:%M"))}
     url = "http://flask:8000/updateData"
+    #url = "http://127.0.0.1:8000/updateData"
     requests.post(url, data=request_data)
 
 create_dataframe(movie_rating_df , 'rating' , {"genres": "Action|Comedy"})

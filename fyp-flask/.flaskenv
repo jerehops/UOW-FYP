@@ -1,2 +1,2 @@
 FLASK_RUN_PORT=8000
-FLASK_ENV = "Production"
+FLASK_ENV = "development"
