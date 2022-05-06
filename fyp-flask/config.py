@@ -11,7 +11,7 @@ class Config:
   FLASK_ADMIN_SWATCH = 'cerulean'
   TEMPLATES_AUTO_RELOAD = True
   WTF_CSRF_ENABLED = False
-  MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+  MAX_CONTENT_LENGTH = 500 * 1024 * 1024 ## max 500mb
   UPLOAD_FOLDER = path.join('/opt/data/uploads/')
   DEFAULT_FOLDER = path.join('/opt/data/default/')
   ALLOWED_EXTENSIONS = set(['csv'])

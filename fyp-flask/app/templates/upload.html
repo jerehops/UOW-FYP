@@ -53,6 +53,12 @@
 	const fileInput = document.querySelector('#uploads input[type=file]');
   	fileInput.onchange = () => {
     	if (fileInput.files.length > 0) {
+			for (i = 0; i < fileInput.files.length; i++){
+				if (fileInput.files[i].size > 500 * 1024 * 1024) {
+					alert('File size too large. Maximum 500MB');
+					return;
+				}
+			}
       		const fileName = document.querySelector('#uploads .file-name');
       		fileName.textContent = fileInput.files.length + " files selected";
     	}
