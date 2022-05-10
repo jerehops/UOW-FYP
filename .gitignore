@@ -133,3 +133,5 @@ dmypy.json
 
 #randomfolders
 data/
+fyp-flask/.DS_Store
+fyp-flask/scripts/.DS_Store
