@@ -3,7 +3,7 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:50
+    image: jerehops/fyp-flask:52
     container_name: flask
     entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
     ports:
