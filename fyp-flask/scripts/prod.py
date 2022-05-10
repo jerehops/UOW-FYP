@@ -31,7 +31,7 @@ def _test():
     test_parsed_data = parse_data(test_data_Str)
     df = _get_dataframe(test_parsed_data['csv_location'])
     test_parsed_data['data_frame'] = df
-    test_parsed_data['user_id'] = "123"
+    test_parsed_data['user_id'] = sys.argv[1]
     print(test_parsed_data)
     plot_fig(test_parsed_data)
 
