@@ -17,11 +17,12 @@ spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
 
 def main():
     data_Str = sys.argv[2]
+    print(f"str received from frontend{data_Str}")
     parsed_data = parse_data(data_Str)
     df = _get_dataframe(parsed_data['csv_location'])
     parsed_data['data_frame'] = df
     parsed_data['user_id'] = sys.argv[1]
-    print(parsed_data)
+    print(f"Parsed data:{parsed_data}")
     plot_fig(parsed_data)
 
 def _test():
@@ -32,7 +33,7 @@ def _test():
     df = _get_dataframe(test_parsed_data['csv_location'])
     test_parsed_data['data_frame'] = df
     test_parsed_data['user_id'] = sys.argv[1]
-    print(test_parsed_data)
+    print(f"Parsed data:{test_parsed_data}")
     plot_fig(test_parsed_data)
 
 
@@ -43,6 +44,9 @@ def _get_dataframe(dataframe_path:str):
     if dataframe_path == "movie_dataset":
         movie_df = load_csv_file("/opt/data/default/movie/movies.csv")
         ratings_df = load_csv_file("/opt/data/default/movie/ratings.csv")
+        #for local testing only.
+        #movie_df = load_csv_file("/Users/kmeng/Desktop/movies.csv")
+        #ratings_df = load_csv_file("/Users/kmeng/Desktop/ratings.csv")
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
 
     else:   
@@ -103,7 +107,7 @@ def plot_histogram (dataframe, x_axis: str, filtering:list, user_id):
 
 def post_fig(fig, user_id):
     s = io.BytesIO()
-    fig.savefig(s, format='jpg')
+    fig.savefig("output.jpg", format='jpg')
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
     request_data = {"image": myimg, "user_id": user_id, "timestamp":(datetime.now().strftime("%d-%m-%Y, %H:%M"))}
