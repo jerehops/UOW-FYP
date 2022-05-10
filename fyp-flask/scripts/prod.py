@@ -10,10 +10,11 @@ import json
 
 # create spark configuration
 spark_conf = SparkConf().setAppName("Media analytic")
-
 sc = SparkContext.getOrCreate(spark_conf)
 spark = SparkSession.builder.getOrCreate() # config used to format output tables better
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
+user_id = sys.argv[1]
+
 
 def main():
     data_Str = sys.argv[2]
@@ -21,7 +22,6 @@ def main():
     parsed_data = parse_data(data_Str)
     df = _get_dataframe(parsed_data['csv_location'])
     parsed_data['data_frame'] = df
-    parsed_data['user_id'] = sys.argv[1]
     print(f"Parsed data:{parsed_data}")
     plot_fig(parsed_data)
 
@@ -32,7 +32,6 @@ def _test():
     test_parsed_data = parse_data(test_data_Str)
     df = _get_dataframe(test_parsed_data['csv_location'])
     test_parsed_data['data_frame'] = df
-    test_parsed_data['user_id'] = sys.argv[1]
     print(f"Parsed data:{test_parsed_data}")
     plot_fig(test_parsed_data)
 
@@ -81,7 +80,7 @@ def get_columns_value(df):
 
 
 
-def plot_histogram (dataframe, x_axis: str, filtering:list, user_id):
+def plot_histogram (dataframe, x_axis: str, filtering:list):
     dataframe.createOrReplaceTempView("temp_view_item")
     if filtering:
         filtering_str = ""
@@ -103,9 +102,9 @@ def plot_histogram (dataframe, x_axis: str, filtering:list, user_id):
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution of '{filtering_str}'").get_figure()
     else:
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution").get_figure()
-    post_fig(fig, user_id)
+    post_fig(fig)
 
-def post_fig(fig, user_id):
+def post_fig(fig):
     s = io.BytesIO()
     fig.savefig("output.jpg", format='jpg')
     s.seek(0)
@@ -148,7 +147,7 @@ def plot_fig(parsed_data):
     Depending on plot_type key word.
     """
     if parsed_data['plot_type'] == 'histogram':
-        plot_histogram(parsed_data['data_frame'], parsed_data['x_axis'], parsed_data['filter_list'], parsed_data['user_id'])
+        plot_histogram(parsed_data['data_frame'], parsed_data['x_axis'], parsed_data['filter_list'])
     elif parsed_data['plot_type'] == 'scatter':
         plot_scatter()
     else:
