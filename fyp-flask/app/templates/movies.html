@@ -18,8 +18,8 @@
 <h2 class="subtitle">
 	Select your filters
 </h2>
-<input class="button is-small" type="button" value=" + " onClick="addFile();">
-<input class="button is-small" type="button" value=" - " onClick="removeFile();">
+<input class="button is-small" id="addBtn" type="button" value=" + " onClick="addFilter();">
+<input class="button is-small" id="removeBtn" type="button" value=" - " onClick="removeFilter();" disabled>
 <br>
 <br>
 <div id="mainContainer">
@@ -34,6 +34,17 @@
   </div>
 </div>
 <br><br>
+<div class="control">
+  <label class="radio">
+    <input type="radio" name="graphtype" id="graphtype" value="histogram">
+    Histogram
+  </label>
+  <label class="radio">
+    <input type="radio" name="graphtype" id="graphtype" value="scatterplot">
+    Scatterplot
+  </label>
+</div>
+<br>
 <div class="columns is-centered">
 	<div class="column is-2">
 		<button class="button is-small" id="start-job" style="width: calc(80% - 10px);">Start Spark Job</button>
@@ -46,9 +57,20 @@
 </div>
 <script>
   var counter = 1;
-  function test_task() {
+  var selectCount = 1;
+  function start_task() {
     var jsonObj = {};
-    jsonObj['category'] = 'Movies'
+    jsonObj['csv-location'] = 'movie_dataset'
+    if (!$('input[name=graphtype]:checked').length > 0) {
+      $.alert({
+        title: 'Error!',
+        content: 'Please select a type of graph',
+      });
+      return;
+    }
+    else {
+      jsonObj['plot_type'] = $('input[name=graphtype]:checked').val()
+    }
     if ($('#x-axis option:selected').val()) {
       jsonObj['x-axis'] = $('#x-axis option:selected').val()
       if ($('#filter'+counter+' option:selected').val() && $('#input'+counter).val()) {
@@ -60,12 +82,12 @@
       console.log(jsonObj);
       $.ajax({
         type: 'POST',
-        url: '/testroute',
+        url: '/sparktask',
         cache: false,
         data: JSON.stringify(jsonObj),
         contentType: "application/json",
         success: function (data) {
-          console.log(data);
+          window.location.href = data
         },
         error: function (data) {
           alert("You're not logged in. Please sign in again");
@@ -80,88 +102,77 @@
       });
     }
   }
-  function start_task() {
-    // send ajax POST request to start background job
-    $.ajax({
-      type: 'POST',
-      url: '/sparktask',
-      cache: false,
-      data: {
-      },
-      success: function (data) {
-        window.location = data;
-      },
-      error: function (data) {
-        alert("You're not logged in. Please sign in again");
-      }
-    });
-  }
   $(function () {
     $('#start-job').click(start_task);
   });
   var options = ["Title", "Genres", "Rating"];
-  function addFile() {
-    if (counter < 3) {
-      counter++;
-      // Get the main Div in which all the other divs will be added
-      mainContainer = document.getElementById('mainContainer');
-      newDiv = document.createElement('div');
-      newDiv.setAttribute("class","columns is-centered");
-      newDiv.id = "column-div" + counter;
-      newDropdown = document.createElement('select');
-      newDropdown.setAttribute("class","select is-small");
-      newDropdown.setAttribute("onchange", "showfield("+counter+");");
-      newDropdown.name = "filter" + counter;
-      newDropdown.id = "filter" + counter;
-      newDropdownOption = document.createElement("option");
-      newDropdownOption.setAttribute("disabled", "");
-      newDropdownOption.setAttribute("selected", "");
-      newDropdownOption.text = "Select Filter";
-      newDropdown.add(newDropdownOption);
-      for (const item of options) {
+  function addFilter() {
+    if ($("#filter"+counter+" :selected").text() != "Select Filter") {
+      if (counter < 3) {
+        document.getElementById("filter" + counter).disabled = true;
+        counter++;
+        // Get the main Div in which all the other divs will be added
+        mainContainer = document.getElementById('mainContainer');
+        newDiv = document.createElement('div');
+        newDiv.setAttribute("class","columns is-centered");
+        newDiv.id = "column-div" + counter;
+        newDropdown = document.createElement('select');
+        newDropdown.setAttribute("class","select is-small");
+        newDropdown.setAttribute("onchange", "showfield("+counter+");");
+        newDropdown.name = "filter" + counter;
+        newDropdown.id = "filter" + counter;
         newDropdownOption = document.createElement("option");
-        newDropdownOption.text = item;
-        newDropdownOption.value = item;
+        newDropdownOption.setAttribute("disabled", "");
+        newDropdownOption.setAttribute("selected", "");
+        newDropdownOption.text = "Select Filter";
         newDropdown.add(newDropdownOption);
+        for (const item of options) {
+          if (item != $("#filter1 :selected").text()) {
+            if (item != $("#filter2 :selected").text()) {
+              newDropdownOption = document.createElement("option");
+              newDropdownOption.text = item;
+              newDropdownOption.value = item;
+            }
+          }
+          newDropdown.add(newDropdownOption);
+        }
+        
+        newInput = document.createElement("input");
+        newInput.setAttribute("type", "textbox");
+        newInput.setAttribute("class", "input is-small");
+        newInput.name = "input" + counter;
+        newInput.id = "input" + counter;
+        newInput.setAttribute("style", "visibility:hidden; width: 25%;");
+        newDiv.appendChild(newDropdown);
+        newDiv.appendChild(newInput);
+        // Append newDiv input to the mainContainer div
+        mainContainer.appendChild(newDiv);
+        document.getElementById("removeBtn").disabled = false;
       }
-      newInput = document.createElement("input");
-      newInput.setAttribute("type", "textbox");
-      newInput.setAttribute("class", "input is-small");
-      newInput.name = "input" + counter;
-      newInput.id = "input" + counter;
-      newInput.setAttribute("style", "visibility:hidden; width: 25%;");
-      newDiv.appendChild(newDropdown);
-      newDiv.appendChild(newInput);
-      // Append newDiv input to the mainContainer div
-      mainContainer.appendChild(newDiv);
+      else {
+        $.alert({
+          title: 'Error!',
+          content: 'Too many fields added',
+        });
+      }
     }
     else {
-      $.alert({
-        title: 'Error!',
-        content: 'Too many fields added',
-      });
-    }
+        $.alert({
+          title: 'Error!',
+          content: 'Please fill up filter before adding new ones',
+        });
+      }
   }
-
-  function removeFile() {
+  function removeFilter() {
     mainContainer = document.getElementById('mainContainer');
     newDiv = document.getElementById('column-div' + counter);
-    textBox = document.getElementById('input'+counter)
-    console.log(newDiv);
-    id = "filter" + counter;
-    newDropdown = document.getElementById(id);
-    console.log(newDropdown);
+    textBox = document.getElementById('filter' + counter)
+    newDiv.removeChild(textBox);
+    mainContainer.removeChild(newDiv);
+    counter--;
+    document.getElementById("filter" + counter).disabled = false;
     if (counter == 1) {
-      $.alert({
-        title: 'Error!',
-        content: 'At least 1 header is required',
-      });
-    }
-    else if (newDropdown) {
-      newDiv.removeChild(textBox);
-      newDiv.removeChild(newDropdown);
-      mainContainer.removeChild(newDiv);
-      counter--;
+      document.getElementById("removeBtn").disabled = true;
     }
   }
 

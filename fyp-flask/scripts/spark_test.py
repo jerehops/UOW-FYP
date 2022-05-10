@@ -6,7 +6,7 @@ from datetime import datetime
 import seaborn as sns
 import json
 
-
+user_id = sys.argv[1]
 
 # create spark configuration
 spark_conf = SparkConf().setAppName("Media analytic")
@@ -20,7 +20,6 @@ def main():
     parsed_data = parse_data(data_Str)
     df = _get_dataframe(parsed_data['csv_location'])
     parsed_data['data_frame'] = df
-    parsed_data['user_id'] = sys.argv[1]
     print(parsed_data)
     plot_fig(parsed_data)
 
@@ -41,10 +40,9 @@ def _get_dataframe(dataframe_path:str):
        if we are processing existing data we will just load the path we know,if not we will load from the path provided
     """
     if dataframe_path == "movie_dataset":
-        movie_df = load_csv_file("/home/kuanmeng/Desktop/docker_fyp/movies.csv")
-        ratings_df = load_csv_file("/home/kuanmeng/Desktop/docker_fyp/ratings.csv")
+        movie_df = load_csv_file("/opt/data/default/movie/movies.csv")
+        ratings_df = load_csv_file("/opt/data/default/movie/ratings.csv")
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
-
     else:   
         response_df = load_csv_file("/opt/data/default/movie/ratings.csv")      
     return response_df
@@ -132,7 +130,7 @@ def parse_data (data_str: str) -> dict:
             response_dict['plot_type'] = value
         elif key == 'x_axis':
             response_dict['x_axis'] = value
-        elif 'filter' in key:
+        elif 'filter1' in key:
             response_dict['filter_list'].append(value)
         else:
             raise ValueError('unidentified key value received')

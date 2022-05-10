@@ -10,8 +10,8 @@ auth = Blueprint('auth', __name__)
 
 policy = PasswordPolicy.from_names(
     length=8,  # min length: 8
-    uppercase=1,  # need min. 2 uppercase letters
-    numbers=1,  # need min. 2 digits
+    uppercase=1,  # need min. 1 uppercase letters
+    numbers=1,  # need min. 1 digits
 )
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 

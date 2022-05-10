@@ -127,12 +127,6 @@
     mainContainer = document.getElementById('mainContainer');
     newDiv = document.getElementById('column-div' + counter);
     textBox = document.getElementById('filter' + counter)
-    //if (counter == 1) {
-    //  $.alert({
-    //    title: 'Error!',
-    //    content: 'At least 1 header is required',
-    //  });
-    //}
     newDiv.removeChild(textBox);
     mainContainer.removeChild(newDiv);
     counter--;
@@ -158,6 +152,7 @@
     else
       $("#datafiles").selectize({
         plugins: ["remove_button"],
+        maxItems: 2,
         persist: false,
         onItemAdd: function (value) {
           jsonObj['dataset' + count] = value;

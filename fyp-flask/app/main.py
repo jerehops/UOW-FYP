@@ -3,6 +3,7 @@ from sqlalchemy import false, true, desc
 from flask import Blueprint, render_template, request, flash, redirect, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+import pandas as pd
 from .models import History
 from . import db
 
@@ -101,5 +102,5 @@ def analyse():
 
 @main.route('/history')
 def history():
-    data_query = History.query.filter_by(user_id=1).order_by(History.id.desc()).limit(10).all()
+    data_query = History.query.filter_by(user_id=str(current_user.id)).order_by(History.id.desc()).limit(10).all()
     return render_template('history.html', data=data_query)

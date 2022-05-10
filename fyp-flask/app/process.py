@@ -7,7 +7,7 @@ from .models import History
 from . import db
 logger = get_task_logger(__name__)
 process = Blueprint('process', __name__)
-celery = Celery('task', broker='redis://redis:6379/0')
+celery = Celery('task', broker='redis://localhost:6379/0')
 
 image_data = ""
 
@@ -15,24 +15,12 @@ image_data = ""
 def sparktask():
     uid = str(current_user.id)
     if current_user.is_authenticated:
-        spark_job_task.apply_async(args=[uid])
+        data = json.loads(request.data)
+        print(json.dumps(data))
+        spark_job_task.apply_async(args=[uid, json.dumps(data)])
         return url_for('process.loading')
     else:
         return jsonify({'Error': 'User is not authenticated'}), 400
-
-@process.route('/testroute', methods=['GET','POST'])
-@login_required
-def testroute():
-    if request.method == 'POST':
-        print("testroute")
-        data = json.loads(request.data)
-        test_task(data)
-        return jsonify({'success': 'true'})
-
-def test_task(data):
-    print(json.dumps(data))
-    return {'status': 'Task completed!'} 
-
 
 @process.route('/loading')
 @login_required
@@ -68,11 +56,12 @@ def results():
     return render_template('results.html', image_data=image_data.imagestring)
 
 @celery.task(bind=True)
-def spark_job_task(self, uid):
-    #master_path = 'local[*]'
-    master_path = 'spark://spark-master:7077'
+def spark_job_task(self, uid, data):
+    master_path = 'local[*]'
+    data=json.dumps(data)
+    #master_path = 'spark://spark-master:7077'
     spark_code_path = 'scripts/spark_test.py'
-    os.system("spark-submit --master %s %s %s" % 
-        (master_path, spark_code_path, uid))
+    os.system("spark-submit --master %s %s %s %s" % 
+        (master_path, spark_code_path, uid, data))
 
     return {'status': 'Task completed!'}
