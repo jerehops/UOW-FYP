@@ -105,12 +105,13 @@ def plot_histogram (dataframe, x_axis: str, filtering:list):
     post_fig(fig)
 
 def post_fig(fig):
+    url = "http://flask:8000/updateData"
+    print(f"Posting image to {url} for account user {user_id}")
     s = io.BytesIO()
     fig.savefig("output.jpg", format='jpg')
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
     request_data = {"image": myimg, "user_id": user_id, "timestamp":(datetime.now().strftime("%d-%m-%Y, %H:%M"))}
-    url = "http://flask:8000/updateData"
     requests.post(url, data=request_data)
 
 
