@@ -13,6 +13,20 @@ spark_conf = SparkConf().setAppName("Media analytic")
 sc = SparkContext.getOrCreate(spark_conf)
 spark = SparkSession.builder.getOrCreate() # config used to format output tables better
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
+
+"""Variable that will change during testing"""
+#Production 
+#url = "http://flask:8000/updateData"
+#Local testing 
+url = "http://localhost:8000/updateData"
+
+#Production 
+movies_dev_path = "/opt/data/default/movie/movies.csv"
+ratings_dev_path = "/opt/data/default/movie/ratings.csv"
+#for local testing only.
+#movie_df = load_csv_file("/Users/kmeng/Desktop/movies.csv")
+#ratings_df = load_csv_file("/Users/kmeng/Desktop/ratings.csv")
+
 user_id = sys.argv[1]
 
 
@@ -25,7 +39,7 @@ def main():
     print(f"Parsed data:{parsed_data}")
     plot_fig(parsed_data)
 
-def _test():
+def test():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
 
     test_data_Str = json.dumps({'plot_type':'histogram','csv_location':'movie_dataset', 'x_axis': 'rating', "filter1": {'title':"U2: Rattle and Hum (1988)"}})
@@ -41,11 +55,8 @@ def _get_dataframe(dataframe_path:str):
        if we are processing existing data we will just load the path we know,if not we will load from the path provided
     """
     if dataframe_path == "movie_dataset":
-        movie_df = load_csv_file("/opt/data/default/movie/movies.csv")
-        ratings_df = load_csv_file("/opt/data/default/movie/ratings.csv")
-        #for local testing only.
-        #movie_df = load_csv_file("/Users/kmeng/Desktop/movies.csv")
-        #ratings_df = load_csv_file("/Users/kmeng/Desktop/ratings.csv")
+        movie_df = load_csv_file(movies_dev_path)
+        ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
 
     else:   
@@ -105,7 +116,7 @@ def plot_histogram (dataframe, x_axis: str, filtering:list):
     post_fig(fig)
 
 def post_fig(fig):
-    url = "http://flask:8000/updateData"
+
     print(f"Posting image to {url} for account user {user_id}")
     s = io.BytesIO()
     fig.savefig("output.jpg", format='jpg')
@@ -160,7 +171,7 @@ def plot_fig(parsed_data):
 
 if __name__ == "__main__":
     ## dummy request for testing in isolation 
-    _test()
+    test()
 
     ##prod
     #main()
