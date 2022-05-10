@@ -18,11 +18,12 @@ curl https://raw.githubusercontent.com/jerehops/fyp-flask/main/deployment/docker
 2. Start the cluster (Please use docker compose 2);
 
 ```bash
-docker-compose up
+docker compose up
 
 ```
 If his doesn't work, add Sudo .
 ```bash
-sudo docker-compose up
+sudo docker compose up
 
 ```
+
