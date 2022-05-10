@@ -56,6 +56,7 @@ def results():
     return render_template('results.html', image_data=image_data.imagestring)
 
 @celery.task(bind=True)
+<<<<<<< HEAD
 def spark_job_task(self, uid, data):
     master_path = 'local[*]'
     data=json.dumps(data)
@@ -63,5 +64,13 @@ def spark_job_task(self, uid, data):
     spark_code_path = 'scripts/spark_test.py'
     os.system("spark-submit --master %s %s %s %s" % 
         (master_path, spark_code_path, uid, data))
+=======
+def spark_job_task(self, uid):
+    #master_path = 'local[*]'
+    master_path = 'spark://spark-master:7077'
+    spark_code_path = 'scripts/prod.py'
+    os.system("spark-submit --master %s %s %s" % 
+        (master_path, spark_code_path, uid))
+>>>>>>> 9465ec64231203a5efd5c40a887a42811b61f5e0
 
     return {'status': 'Task completed!'}
