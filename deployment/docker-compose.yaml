@@ -3,7 +3,7 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:60
+    image: jerehops/fyp-flask:61
     container_name: flask
     entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
     ports:
@@ -23,7 +23,7 @@ services:
   celery:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:60
+    image: jerehops/fyp-flask:61
     volumes:
       - defaultdata:/opt/data/default
       - uploaddata:/opt/data/default
@@ -58,9 +58,9 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=2G
-      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
       - SPARK_WORKLOAD=worker
       - SPARK_LOCAL_IP=spark-worker-1
     depends_on:
@@ -77,9 +77,9 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=2G
-      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
       - SPARK_WORKLOAD=worker
       - SPARK_LOCAL_IP=spark-worker-2
     depends_on:
@@ -96,9 +96,9 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=2G
-      - SPARK_EXECUTOR_MEMORY=2G
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
       - SPARK_WORKLOAD=worker
       - SPARK_LOCAL_IP=spark-worker-3
     depends_on:
