@@ -21,11 +21,11 @@ spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
 url = "http://localhost:8000/updateData"
 
 #Production 
-movies_dev_path = "/opt/data/default/movie/movies.csv"
-ratings_dev_path = "/opt/data/default/movie/ratings.csv"
+#movies_dev_path = "/opt/data/default/movie/movies.csv"
+#ratings_dev_path = "/opt/data/default/movie/ratings.csv"
 #for local testing only.
-#movie_df = load_csv_file("/Users/kmeng/Desktop/movies.csv")
-#ratings_df = load_csv_file("/Users/kmeng/Desktop/ratings.csv")
+movies_dev_path = "/Users/kmeng/Desktop/movies.csv"
+ratings_dev_path = "/Users/kmeng/Desktop/ratings.csv"
 
 user_id = sys.argv[1]
 
@@ -107,12 +107,13 @@ def plot_histogram (dataframe, x_axis: str, filtering:list):
         print(query_statement)
     else:
         query_statement = f'select {x_axis} from temp_view_item'
-
+    print(f"Starting Spark Sql Query .........")
     df = (spark.sql(query_statement)).toPandas()
     if filtering:
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution of '{filtering_str}'").get_figure()
     else:
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution").get_figure()
+    print(f"Query completed, posting figure ....")
     post_fig(fig)
 
 def post_fig(fig):
