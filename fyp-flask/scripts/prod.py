@@ -136,7 +136,7 @@ def post_fig(fig):
 
     print(f"Posting image to {url} for account user {user_id}")
     s = io.BytesIO()
-    fig.savefig("output.jpg", format='jpg')
+    fig.savefig(s, format='jpg')
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
     request_data = {"image": myimg, "user_id": user_id,
