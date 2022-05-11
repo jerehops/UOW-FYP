@@ -41,7 +41,7 @@ def main():
 
 def test():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
-
+    print("WE ARE CURRENTLY RUNNING DUMMY DATE")
     test_data_Str = json.dumps({'plot_type':'histogram','csv_location':'movie_dataset', 'x_axis': 'rating', "filter1": {'title':"U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
     df = _get_dataframe(test_parsed_data['csv_location'])
@@ -108,12 +108,17 @@ def plot_histogram (dataframe, x_axis: str, filtering:list):
     else:
         query_statement = f'select {x_axis} from temp_view_item'
     print(f"Starting Spark Sql Query .........")
-    df = (spark.sql(query_statement)).toPandas()
+    try: 
+        df = (spark.sql(query_statement)).toPandas()
+    except Exception as e:    
+        print(f"Error during SQL Query....")  
+        print(e)  
+    print(f"Spark Sql Query Query completed, plotting figure....")
     if filtering:
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution of '{filtering_str}'").get_figure()
     else:
         fig = sns.histplot(data=df, x=x_axis).set_title(f"'{x_axis}' distribution").get_figure()
-    print(f"Query completed, posting figure ....")
+    print(f"Figure plotted, posting figure ....")
     post_fig(fig)
 
 def post_fig(fig):
