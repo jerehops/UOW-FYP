@@ -189,7 +189,7 @@ def plot_fig(parsed_data):
 
 if __name__ == "__main__":
     # dummy request for testing in isolation
-    test()
+    #test()
 
     # prod
-    # main()
+    main()
