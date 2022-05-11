@@ -10,9 +10,10 @@ import json
 
 # create spark configuration
 spark_conf = SparkConf().setAppName("Media analytic")
-sc = SparkContext.getOrCreate(spark_conf)
+#sc = SparkContext.getOrCreate(spark_conf)
 spark = SparkSession.builder.getOrCreate() # config used to format output tables better
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
+spark.conf.set("spark.sql.shuffle.partitions",spark.sparkContext.defaultParallelism ) 
 
 """Variable that will change during testing"""
 #Production 
