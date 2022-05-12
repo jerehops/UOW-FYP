@@ -49,7 +49,7 @@ def test():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
     test_data_Str = json.dumps({'plot_type': 'histogram', 'csv-location': 'movie_dataset',
-                               'x_axis': 'rating', "filter1": {'title': "U2: Rattle and Hum (1988)"}})
+                               'x-axis': 'rating', "filter1": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
     df = _get_dataframe(test_parsed_data['csv-location'])
     test_parsed_data['data_frame'] = df
@@ -165,8 +165,8 @@ def parse_data(data_str: str) -> dict:
             response_dict['csv-location'] = value
         elif key == 'plot_type':
             response_dict['plot_type'] = value
-        elif key == 'x_axis':
-            response_dict['x_axis'] = value
+        elif key == 'x-axis':
+            response_dict['x-axis'] = value
         elif 'filter' in key:
             response_dict['filter_list'].append(value)
         else:   
@@ -181,7 +181,7 @@ def plot_fig(parsed_data):
     """
     if parsed_data['plot_type'] == 'histogram':
         plot_histogram(
-            parsed_data['data_frame'], parsed_data['x_axis'], parsed_data['filter_list'])
+            parsed_data['data_frame'], parsed_data['x-axis'], parsed_data['filter_list'])
     elif parsed_data['plot_type'] == 'scatter':
         plot_scatter()
     else:
