@@ -7,7 +7,7 @@ from .models import History
 from . import db
 logger = get_task_logger(__name__)
 process = Blueprint('process', __name__)
-celery = Celery('task', broker='redis://redis:6379/0')
+celery = Celery('task', broker='redis://localhost:6379/0')
 
 image_data = ""
 

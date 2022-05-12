@@ -60,6 +60,7 @@
   var selectCount = 1;
   function start_task() {
     var jsonObj = {};
+    var inputObj = {};
     jsonObj['csv-location'] = 'movie_dataset'
     if (!$('input[name=graphtype]:checked').length > 0) {
       $.alert({
@@ -75,11 +76,10 @@
       jsonObj['x-axis'] = $('#x-axis option:selected').val()
       if ($('#filter'+counter+' option:selected').val() && $('#input'+counter).val()) {
         for (var i = 1; i < counter+1; i++) {
-          jsonObj['filter'+i] = $('#input'+i).val();
+          inputObj[$('#filter'+i).val()] = $('#input'+i).val();
         }
+        jsonObj['filters'] = inputObj;
       }
-      else jsonObj['filter1'] = 'false'
-      console.log(jsonObj);
       $.ajax({
         type: 'POST',
         url: '/sparktask',
