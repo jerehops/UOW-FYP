@@ -160,6 +160,7 @@ def parse_data(data_str: str) -> dict:
     response_dict['filter_list'] = []
     data_dict = json.loads(data_str)
     for key, value in data_dict.items():
+        print(f"Key={key}, value={value}")
         if key == 'csv-location':
             response_dict['csv-location'] = value
         elif key == 'plot_type':
@@ -168,8 +169,8 @@ def parse_data(data_str: str) -> dict:
             response_dict['x_axis'] = value
         elif 'filter' in key:
             response_dict['filter_list'].append(value)
-        else:
-            raise ValueError(f'unidentified key value "{key}" received')
+        else:   
+            raise ValueError(f'unidentified key value received')
     return response_dict
 
 
