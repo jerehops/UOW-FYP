@@ -169,7 +169,7 @@ def parse_data(data_str: str) -> dict:
         elif 'filter' in key:
             response_dict['filter_list'].append(value)
         else:
-            raise ValueError('unidentified key value received')
+            raise ValueError(f'unidentified key value "{key}" received')
     return response_dict
 
 
