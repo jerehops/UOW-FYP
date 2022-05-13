@@ -13,7 +13,7 @@ RUN echo "Install requirements and set up folders"
 COPY . .
 RUN pip install -r requirements.txt
 
-ADD https://files.grouplens.org/datasets/movielens/ml-latest.zip movie.zip 
+ADD http://files.grouplens.org/datasets/movielens/ml-latest.zip movie.zip 
 RUN unzip -j movie.zip -d movie \
 && rm movie.zip
 
