@@ -57,17 +57,18 @@ def test():
     plot_fig(test_parsed_data)
 
 
-def _get_dataframe(dataframe_path: str):
+def _get_dataframe(file_name: str):
     """Return a dataframe depending on the job, 
        if we are processing existing data we will just load the path we know,if not we will load from the path provided
     """
-    if dataframe_path == "movie_dataset":
+    if file_name == "movie_dataset":
         movie_df = load_csv_file(movies_dev_path)
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
 
     else:
-        response_df = load_csv_file(dataframe_path)
+        full_path = "opt/data/upload/{user_id}/{file_name}"
+        response_df = load_csv_file(full_path)
     return response_df
 
 
@@ -167,7 +168,7 @@ def parse_data(data_str: str) -> dict:
             response_dict['plot_type'] = value
         elif key == 'x-axis':
             response_dict['x-axis'] = value
-        elif 'filter' in key:
+        elif 'filters' in key:
             response_dict['filter_list'].append(value)
         else:   
             raise ValueError(f'unidentified key value received')
