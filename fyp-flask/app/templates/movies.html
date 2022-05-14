@@ -10,9 +10,9 @@
 <div class="columns is-centered">
   <select class="select" name="x-axis" id="x-axis">
     <option value="" disabled selected>Select Your X-Axis</option>
-    <option value="Title">Title</option>
-    <option value="Genres">Genres</option>
-    <option value="Rating">Rating</option>
+    <option value="title">Title</option>
+    <option value="genres">Genres</option>
+    <option value="rating">Rating</option>
   </select>
 </div>
 <h2 class="subtitle">
@@ -24,13 +24,15 @@
 <br>
 <div id="mainContainer">
   <div class="columns is-centered" id="column-div1">
-    <select class="select is-small" name="filter1" id="filter1" required onchange="showfield(1);">
+    <select class="select is-small" name="filter1" id="filter1" required onchange="showfield(this.value, 1);">
       <option value="" disabled selected>Select Filter</option>
-      <option value="Title">Title</option>
-      <option value="Genres">Genres</option>
-      <option value="Rating">Rating</option>
+      <option value="title">Title</option>
+      <option value="genres">Genres</option>
+      <option value="rating">Rating</option>
     </select>
-    <input class="input is-small" type="textbox" name="input1" id="input1" style="visibility:hidden; width: 25%;"/>
+    <!-- <input class="input is-small" type="textbox" name="input1" id="input1" style="visibility:hidden; width: 25%;"/> -->
+    <select style="width:30%; visibility:hidden;" id="input1">
+    </select>
   </div>
 </div>
 <br><br>
@@ -40,8 +42,8 @@
     Histogram
   </label>
   <label class="radio">
-    <input type="radio" name="graphtype" id="graphtype" value="scatterplot">
-    Scatterplot
+    <input type="radio" name="graphtype" id="graphtype" value="piechart">
+    Pie Chart
   </label>
 </div>
 <br>
@@ -58,6 +60,9 @@
 <script>
   var counter = 1;
   var selectCount = 1;
+  var mt = {{movietitle|safe}};
+  var r = {{rating|safe}};
+  var g = {{genre|safe}};
   function start_task() {
     var jsonObj = {};
     var inputObj = {};
@@ -118,7 +123,7 @@
         newDiv.id = "column-div" + counter;
         newDropdown = document.createElement('select');
         newDropdown.setAttribute("class","select is-small");
-        newDropdown.setAttribute("onchange", "showfield("+counter+");");
+        newDropdown.setAttribute("onchange", "showfield(this.value," +counter+");");
         newDropdown.name = "filter" + counter;
         newDropdown.id = "filter" + counter;
         newDropdownOption = document.createElement("option");
@@ -131,18 +136,17 @@
             if (item != $("#filter2 :selected").text()) {
               newDropdownOption = document.createElement("option");
               newDropdownOption.text = item;
-              newDropdownOption.value = item;
+              newDropdownOption.value = item.toLowerCase();
             }
           }
           newDropdown.add(newDropdownOption);
         }
         
-        newInput = document.createElement("input");
-        newInput.setAttribute("type", "textbox");
-        newInput.setAttribute("class", "input is-small");
+        newInput = document.createElement("select");
+        newInput.setAttribute("class", "select is-small");
         newInput.name = "input" + counter;
         newInput.id = "input" + counter;
-        newInput.setAttribute("style", "visibility:hidden; width: 25%;");
+        newInput.setAttribute("style", "visibility:hidden; width: 30%;");
         newDiv.appendChild(newDropdown);
         newDiv.appendChild(newInput);
         // Append newDiv input to the mainContainer div
@@ -175,10 +179,43 @@
       document.getElementById("removeBtn").disabled = true;
     }
   }
-
-  function showfield(value){
+  function showfield(value, count){
     if (value) {
-      document.getElementById('input'+value).style.visibility='visible'
+      select = document.getElementById('input'+count)
+      select.style.visibility='visible'
+      if (value == "title") {
+        while (select.options.length > 0) {
+          select.remove(0);
+        }
+        for (let [key, value] of Object.entries(mt)) {
+          newDropdownOption = document.createElement("option");
+          newDropdownOption.text = value;
+          newDropdownOption.value = value;
+          select.add(newDropdownOption);
+        }
+      }
+      if (value == "rating") {
+        while (select.options.length > 0) {
+          select.remove(0);
+        }
+        for (let [key, value] of Object.entries(r)) {
+          newDropdownOption = document.createElement("option");
+          newDropdownOption.text = value.toFixed(1);
+          newDropdownOption.value = value.toFixed(1);
+          select.add(newDropdownOption);
+        }
+      }
+      if (value == "genres") {
+        while (select.options.length > 0) {
+          select.remove(0);
+        }
+        for (let [key, value] of Object.entries(g)) {
+          newDropdownOption = document.createElement("option");
+          newDropdownOption.text = value;
+          newDropdownOption.value = value;
+          select.add(newDropdownOption);
+        }
+      }
     }
   }
 </script>

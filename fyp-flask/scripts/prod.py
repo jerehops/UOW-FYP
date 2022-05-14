@@ -65,7 +65,6 @@ def _get_dataframe(dataframe_path: str):
         movie_df = load_csv_file(movies_dev_path)
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
-
     else:
         response_df = load_csv_file(dataframe_path)
     return response_df

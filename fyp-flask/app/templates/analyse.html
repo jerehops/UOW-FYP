@@ -8,7 +8,7 @@
   Select your uploaded data
 </h2>
 <div class="columns is-centered">
-  <select style="width:30%;" id="datafiles" multiple>
+  <select style="width:30%;" id="datafiles">
     <option value=""></option>
     {% for file in fileList %}
     <option value="{{ file }}">{{ file }}</option>
@@ -35,6 +35,17 @@
   </div>
 </div>
 <br><br>
+<div class="control">
+  <label class="radio">
+    <input type="radio" name="graphtype" id="graphtype" value="histogram">
+    Histogram
+  </label>
+  <label class="radio">
+    <input type="radio" name="graphtype" id="graphtype" value="piechart">
+    Pie Chart
+  </label>
+</div>
+<br>
 <div class="columns is-centered">
   <div class="column is-2">
     <button class="button is-small" id="start-job" style="width: calc(80% - 10px);">Start Spark Job</button><br><br>
@@ -53,31 +64,39 @@
 <script>
   var counter = 1;
   var count = 1;
-  var jsonObj = {};
   function start_task() {
+    var jsonObj = {};
+    var inputObj = {};
     if (Object.keys(jsonObj).length >= 1) {
+      if (!$('input[name=graphtype]:checked').length > 0) {
+      $.alert({
+        title: 'Error!',
+        content: 'Please select a type of graph',
+      });
+      return;
+    }
       if ($('#x-axis').val()) {
         jsonObj['x-axis'] = $('#x-axis').val()
         if ($('#filter' + counter).val()) {
           for (var i = 1; i < counter + 1; i++) {
-            jsonObj['filter' + i] = $('#filter' + i).val();
+            inputObj['filter' + i] = $('#filter' + i).val();
           }
+          jsonObj['filters'] = inputObj;
         }
-        else {
-          jsonObj['filter1'] = 'false'
-        }
-        jsonObj['userfolder'] = '{{id}}'
+        jsonObj['csv_dataset'] = 'upload'
+        jsonObj['filename'] = $('#datafiles option:selected').val()
         $.ajax({
           type: 'POST',
-          url: '/testroute',
+          url: '/sparktask',
           cache: false,
           data: JSON.stringify(jsonObj),
           contentType: "application/json",
           success: function (data) {
-            console.log(data);
+            window.location.href = data
           },
           error: function () {
-            alert('Unexpected error');
+            alert("You're not logged in. Please sign in again");
+            window.location.href = "/login"
           }
         });
       }

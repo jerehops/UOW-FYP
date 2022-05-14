@@ -1,4 +1,4 @@
-import os
+import os, json
 from sqlalchemy import false, true, desc
 from flask import Blueprint, render_template, request, flash, redirect, current_app, jsonify
 from flask_login import login_required, current_user
@@ -41,9 +41,18 @@ def options():
     return render_template('options.html')
 
 @main.route('/movies')
-@login_required
 def movies():
-    return render_template('movies.html')
+    moviedata = "/opt/data/default/movie/movies.csv"
+    ratingdata = "/opt/data/default/movie/ratings.csv"
+    ## local dataset
+    #moviedata = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv"
+    #ratingdata = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv"
+    movie_df = pd.read_csv(moviedata, usecols=['title','genres'], low_memory=True, skipinitialspace=True)
+    rating_df = pd.read_csv(ratingdata, usecols=['rating'], low_memory=True, skipinitialspace=True)
+    movietitle = sorted((movie_df.title.unique()).tolist())
+    genre = sorted((movie_df.genres.unique()).tolist())
+    rating = sorted((rating_df.rating.unique()).tolist())
+    return render_template('movies.html', movietitle=movietitle, genre=genre, rating=rating)
 
 #####################################
 ## Routes for Uploading Files
