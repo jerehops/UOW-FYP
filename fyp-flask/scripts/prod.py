@@ -186,12 +186,6 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
     colors = sns.color_palette('bright')[0:5]
     s = io.BytesIO()
     s.seek(0)
-<<<<<<< HEAD
-    myimg = base64.b64encode(s.read()).decode("utf8")
-    request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
-                    "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
-    requests.post(url, data=request_data)
-=======
     if filtering:
         plt.pie(value_list, labels = label_list, colors = colors)
         plt.title(f"{x_axis} distribution of {filtering_str_for_figure}")
@@ -214,7 +208,6 @@ def post_fig(fig):
         request_data = {"image": myimg, "user_id": user_id,
                         "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
         requests.post(url, data=request_data)
->>>>>>> 29b34c0fa13f48e1667f4bd1f01ee1624ecfeec4
 
 
 
