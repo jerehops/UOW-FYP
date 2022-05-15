@@ -94,8 +94,7 @@
         data: JSON.stringify(jsonObj),
         contentType: "application/json",
         success: function (data) {
-          //window.location.href = data
-          console.log(data)
+          window.location.href = data
         },
         error: function (data) {
           alert("You're not logged in. Please sign in again");
