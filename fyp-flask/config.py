@@ -12,6 +12,10 @@ class Config:
   TEMPLATES_AUTO_RELOAD = True
   WTF_CSRF_ENABLED = False
   MAX_CONTENT_LENGTH = 500 * 1024 * 1024 ## max 500mb
+  ## local testing
+  #UPLOAD_FOLDER = path.join(base_dir + '/data/uploads/')
+  #DEFAULT_FOLDER = path.join(base_dir + '/data/default/')
+  ## prod variable
   UPLOAD_FOLDER = path.join('/opt/data/uploads/')
   DEFAULT_FOLDER = path.join('/opt/data/default/')
   ALLOWED_EXTENSIONS = set(['csv'])

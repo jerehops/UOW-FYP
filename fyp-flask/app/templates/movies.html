@@ -63,9 +63,9 @@
   var mt = {{movietitle|safe}};
   var r = {{rating|safe}};
   var g = {{genre|safe}};
+  var jsonObj = {};
+  var inputObj = {};
   function start_task() {
-    var jsonObj = {};
-    var inputObj = {};
     jsonObj['csv-location'] = 'movie_dataset'
     if (!$('input[name=graphtype]:checked').length > 0) {
       $.alert({
