@@ -28,13 +28,13 @@ spark.conf.set("spark.sql.shuffle.partitions",
 url = "http://localhost:8000/updateData"
 
 # Production
-#movies_dev_path = "/opt/data/default/movie/movies.csv"
-#ratings_dev_path = "/opt/data/default/movie/ratings.csv"
+movies_dev_path = "/opt/data/default/movie/movies.csv"
+ratings_dev_path = "/opt/data/default/movie/ratings.csv"
 # for local testing only.
 #movies_dev_path = "/Users/kmeng/Desktop/movies.csv"
 #ratings_dev_path = "/Users/kmeng/Desktop/ratings.csv"
-movies_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv"
-ratings_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv"
+#movies_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv"
+#ratings_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv"
 
 task_id = sys.argv[1]
 user_id = sys.argv[2]
