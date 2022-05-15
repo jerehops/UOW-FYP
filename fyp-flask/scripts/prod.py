@@ -23,9 +23,9 @@ spark.conf.set("spark.sql.shuffle.partitions",
 
 """Variable that will change during testing"""
 # Production
-#url = "http://flask:8000/updateData"
+url = "http://flask:8000/updateData"
 # Local testing
-url = "http://localhost:8000/updateData"
+#url = "http://localhost:8000/updateData"
 
 # Production
 movies_dev_path = "/opt/data/default/movie/movies.csv"
