@@ -8,6 +8,8 @@ import sys
 from datetime import datetime
 import seaborn as sns
 import json
+from pyspark.sql.functions import countDistinct
+import matplotlib.pyplot as plt
 
 
 # create spark configuration
@@ -48,11 +50,21 @@ def main():
     plot_fig(parsed_data)
 
 
-def test():
+def test_histogram():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
     test_data_Str = json.dumps({'plot_type': 'histogram', 'csv-location': 'movie_dataset',
-                               'x-axis': 'rating', "filter1": {'title': "U2: Rattle and Hum (1988)"}})
+                               'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
+    test_parsed_data = parse_data(test_data_Str)
+    df = _get_dataframe(test_parsed_data['csv-location'])
+    test_parsed_data['data_frame'] = df
+    print(f"Parsed data:{test_parsed_data}")
+    plot_fig(test_parsed_data)
+
+def test_pie_chart():
+    print("WE ARE CURRENTLY RUNNING DUMMY DATE")
+    test_data_Str = json.dumps({'plot_type': 'piechart', 'csv-location': 'movie_dataset',
+                               'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
     df = _get_dataframe(test_parsed_data['csv-location'])
     test_parsed_data['data_frame'] = df
@@ -68,6 +80,7 @@ def _get_dataframe(file_name: str):
         movie_df = load_csv_file(movies_dev_path)
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
+
     else:
         full_path = "opt/data/upload/{user_id}/{file_name}"
         response_df = load_csv_file(full_path)
@@ -105,12 +118,15 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
     dataframe.createOrReplaceTempView("temp_view_item")
     if filtering:
         filtering_str = ""
+        filtering_str_for_figure = "" 
         for fliter in filtering:
             for columns_name, columns_filter in fliter.items():
                 if filtering_str == "":
                     filtering_str = f'{columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
                 else:
-                    f'{filtering_str} and {columns_name} = "{columns_filter}"'
+                    filtering_str = f'{filtering_str} and {columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{filtering_str} \n and {columns_name} = "{columns_filter}"'
 
         query_statement = f'select {x_axis} from temp_view_item where {filtering_str}'
         print(query_statement)
@@ -127,7 +143,60 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
     print(f"Spark Sql Query Query completed, plotting figure....")
     if filtering:
         fig = sns.histplot(data=df, x=x_axis).set_title(
-            f"'{x_axis}' distribution of '{filtering_str}'").get_figure()
+            f"{x_axis} distribution of {filtering_str_for_figure}").get_figure()
+    else:
+        fig = sns.histplot(data=df, x=x_axis).set_title(
+            f"{x_axis} distribution").get_figure()
+    print(f"Figure plotted, posting figure ....")
+    post_fig(fig)
+
+def plot_pie_chart(dataframe, x_axis: str, filtering: list):
+    dataframe.createOrReplaceTempView("temp_view_item")
+    if filtering:
+        filtering_str = ""
+        filtering_str_for_figure = "" 
+        for fliter in filtering:
+            for columns_name, columns_filter in fliter.items():
+                if filtering_str == "":
+                    filtering_str = f'{columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
+                else:
+                    filtering_str = f'{filtering_str} and {columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{filtering_str} \n and {columns_name} = "{columns_filter}"'
+
+        query_statement = f'select COUNT(*), {x_axis} from temp_view_item where {filtering_str} GROUP BY {x_axis} ORDER BY {x_axis}'
+        print(query_statement)
+    else:
+        query_statement = f'select {x_axis} from temp_view_item'
+    print(f"Starting Spark Sql Query .........")
+    try:
+
+        df = spark.sql(query_statement)
+        print("Transfer dataframe into pandas")
+        df = df.toPandas()
+        print(df)
+        label_list = df[x_axis].tolist()
+        print(label_list)
+        value_list = df['count(1)'].tolist()
+        print(value_list)
+    except Exception as e:
+        print(f"Error during SQL Query....")
+        print(e)
+    print(f"Spark Sql Query Query completed, plotting figure....")
+    colors = sns.color_palette('bright')[0:5]
+    s = io.BytesIO()
+    s.seek(0)
+<<<<<<< HEAD
+    myimg = base64.b64encode(s.read()).decode("utf8")
+    request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
+                    "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
+    requests.post(url, data=request_data)
+=======
+    if filtering:
+        plt.pie(value_list, labels = label_list, colors = colors)
+        plt.title(f"{x_axis} distribution of {filtering_str_for_figure}")
+        fig = plt.gcf()
+
     else:
         fig = sns.histplot(data=df, x=x_axis).set_title(
             f"'{x_axis}' distribution").get_figure()
@@ -135,22 +204,19 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
     post_fig(fig)
 
 
+
 def post_fig(fig):
+        print(f"Posting image to {url} for account user {user_id}")
+        s = io.BytesIO()
+        fig.savefig(s, format='jpg')
+        s.seek(0)
+        myimg = base64.b64encode(s.read()).decode("utf8")
+        request_data = {"image": myimg, "user_id": user_id,
+                        "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
+        requests.post(url, data=request_data)
+>>>>>>> 29b34c0fa13f48e1667f4bd1f01ee1624ecfeec4
 
-    print(f"Posting image to {url} for account user {user_id}")
-    s = io.BytesIO()
-    fig.savefig(s, format='jpg')
-    s.seek(0)
-    myimg = base64.b64encode(s.read()).decode("utf8")
-    request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
-                    "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
-    requests.post(url, data=request_data)
 
-
-def plot_scatter(dataframe, x_axis: str, y_axis: str, filtering: list):
-    """Place holder"""
-    fig = "a"
-    return fig
 
 
 def parse_data(data_str: str) -> dict:
@@ -185,15 +251,17 @@ def plot_fig(parsed_data):
     if parsed_data['plot_type'] == 'histogram':
         plot_histogram(
             parsed_data['data_frame'], parsed_data['x-axis'], parsed_data['filter_list'])
-    elif parsed_data['plot_type'] == 'scatter':
-        plot_scatter()
+    elif parsed_data['plot_type'] == 'piechart':
+        plot_pie_chart(    
+            parsed_data['data_frame'], parsed_data['x-axis'], parsed_data['filter_list'])
     else:
         raise ValueError("Plot type not recognised.")
 
 
 if __name__ == "__main__":
     # dummy request for testing in isolation
-    #test()
+    #test_histogram()
+    #test_pie_chart()
 
     # prod
     main()
