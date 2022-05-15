@@ -33,12 +33,15 @@ ratings_dev_path = "/opt/data/default/movie/ratings.csv"
 # for local testing only.
 #movies_dev_path = "/Users/kmeng/Desktop/movies.csv"
 #ratings_dev_path = "/Users/kmeng/Desktop/ratings.csv"
+#movies_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv"
+#ratings_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv"
 
-user_id = sys.argv[1]
+task_id = sys.argv[1]
+user_id = sys.argv[2]
 
 
 def main():
-    data_Str = sys.argv[2]
+    data_Str = sys.argv[3]
     print(f"str received from frontend{data_Str}")
     parsed_data = parse_data(data_Str)
     df = _get_dataframe(parsed_data['csv-location'])
@@ -202,7 +205,7 @@ def post_fig(fig):
         fig.savefig(s, format='jpg')
         s.seek(0)
         myimg = base64.b64encode(s.read()).decode("utf8")
-        request_data = {"image": myimg, "user_id": user_id,
+        request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
                         "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
         requests.post(url, data=request_data)
 

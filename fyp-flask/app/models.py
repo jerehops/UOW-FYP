@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
 class History(UserMixin, db.Model):
     __tablename__ = 'history'
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+    task_id = db.Column(db.String(100))
     imagestring = db.Column(db.String(100))
     user_id = db.Column(db.String(100))
     datetime = db.Column(db.String(1000))

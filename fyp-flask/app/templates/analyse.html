@@ -64,9 +64,9 @@
 <script>
   var counter = 1;
   var count = 1;
+  var jsonObj = {};
+  var inputObj = {};
   function start_task() {
-    var jsonObj = {};
-    var inputObj = {};
     if (Object.keys(jsonObj).length >= 1) {
       if (!$('input[name=graphtype]:checked').length > 0) {
       $.alert({
@@ -171,7 +171,7 @@
     else
       $("#datafiles").selectize({
         plugins: ["remove_button"],
-        maxItems: 2,
+        maxItems: 1,
         persist: false,
         onItemAdd: function (value) {
           jsonObj['dataset' + count] = value;
