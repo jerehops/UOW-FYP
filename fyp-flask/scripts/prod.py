@@ -205,7 +205,7 @@ def post_fig(fig):
         fig.savefig(s, format='jpg')
         s.seek(0)
         myimg = base64.b64encode(s.read()).decode("utf8")
-        request_data = {"image": myimg, "user_id": user_id,
+        request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
                         "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M"))}
         requests.post(url, data=request_data)
 
