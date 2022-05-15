@@ -30,9 +30,10 @@
       <option value="genres">Genres</option>
       <option value="rating">Rating</option>
     </select>
-    <!-- <input class="input is-small" type="textbox" name="input1" id="input1" style="visibility:hidden; width: 25%;"/> -->
-    <select style="width:30%; visibility:hidden;" id="input1">
-    </select>
+    <input class="input is-small" type="text" name="input1" id="input1" list="datalist1" style="visibility:hidden; width: 30%;"/>
+    <datalist id="datalist1" style="visibility:hidden;"></datalist>
+    <!-- <select style="width:30%; visibility:hidden;" id="input1">
+    </select> -->
   </div>
 </div>
 <br><br>
@@ -85,6 +86,7 @@
         }
         jsonObj['filters'] = inputObj;
       }
+      console.log(jsonObj)
       $.ajax({
         type: 'POST',
         url: '/sparktask',
@@ -92,7 +94,8 @@
         data: JSON.stringify(jsonObj),
         contentType: "application/json",
         success: function (data) {
-          window.location.href = data
+          //window.location.href = data
+          console.log(data)
         },
         error: function (data) {
           alert("You're not logged in. Please sign in again");
@@ -141,14 +144,19 @@
           }
           newDropdown.add(newDropdownOption);
         }
-        
-        newInput = document.createElement("select");
-        newInput.setAttribute("class", "select is-small");
+        newInput = document.createElement("input");
+        newInput.setAttribute("class", "input is-small");
+        newInput.setAttribute("type", "text");
         newInput.name = "input" + counter;
         newInput.id = "input" + counter;
+        newInput.setAttribute("list", "datalist"+counter);
         newInput.setAttribute("style", "visibility:hidden; width: 30%;");
+        newDatalist = document.createElement("datalist")
+        newDatalist.id = "datalist" + counter;
+        newDatalist.setAttribute("style", "visibility:hidden;");
         newDiv.appendChild(newDropdown);
         newDiv.appendChild(newInput);
+        newDiv.appendChild(newDatalist);
         // Append newDiv input to the mainContainer div
         mainContainer.appendChild(newDiv);
         document.getElementById("removeBtn").disabled = false;
@@ -181,39 +189,40 @@
   }
   function showfield(value, count){
     if (value) {
-      select = document.getElementById('input'+count)
-      select.style.visibility='visible'
+      document.getElementById('input'+count).style.visibility='visible'
+      datalist = document.getElementById('datalist'+count)
+      datalist.style.visibility='visible'
       if (value == "title") {
-        while (select.options.length > 0) {
-          select.remove(0);
+        while (datalist.options.length > 0) {
+          datalist.remove(0);
         }
         for (let [key, value] of Object.entries(mt)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value;
           newDropdownOption.value = value;
-          select.add(newDropdownOption);
+          datalist.appendChild(newDropdownOption);
         }
       }
       if (value == "rating") {
-        while (select.options.length > 0) {
-          select.remove(0);
+        while (datalist.options.length > 0) {
+          datalist.remove(0);
         }
         for (let [key, value] of Object.entries(r)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value.toFixed(1);
           newDropdownOption.value = value.toFixed(1);
-          select.add(newDropdownOption);
+          datalist.appendChild(newDropdownOption);
         }
       }
       if (value == "genres") {
-        while (select.options.length > 0) {
-          select.remove(0);
+        while (datalist.options.length > 0) {
+          datalist.remove(0);
         }
         for (let [key, value] of Object.entries(g)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value;
           newDropdownOption.value = value;
-          select.add(newDropdownOption);
+          datalist.appendChild(newDropdownOption);
         }
       }
     }

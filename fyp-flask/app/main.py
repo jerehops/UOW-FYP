@@ -1,6 +1,6 @@
-import os, json
+import os
 from sqlalchemy import false, true, desc
-from flask import Blueprint, render_template, request, current_app, jsonify, session
+from flask import Blueprint, render_template, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import pandas as pd
