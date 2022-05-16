@@ -84,7 +84,6 @@
           jsonObj['filters'] = inputObj;
         }
         jsonObj['csv_dataset'] = 'upload'
-        jsonObj['filename'] = $('#datafiles option:selected').val()
         $.ajax({
           type: 'POST',
           url: '/sparktask',
@@ -174,13 +173,13 @@
         maxItems: 1,
         persist: false,
         onItemAdd: function (value) {
-          jsonObj['dataset' + count] = value;
+          jsonObj['filename'] = value;
           count++;
         },
         onItemRemove: function (value) {
           for (i = 0; i <= Object.keys(jsonObj).length + 1; i++) {
-            if (jsonObj['dataset' + i] == value) {
-              delete jsonObj['dataset' + i]
+            if (jsonObj['filename'] == value) {
+              delete jsonObj['filename']
             }
           }
           count--;
