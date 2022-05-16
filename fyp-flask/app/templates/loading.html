@@ -31,7 +31,7 @@
   setInterval(function(){
           $.getJSON('/refreshData', {
           }, function(data) {
-            if(data.output == "completed"){
+            if(data.output == "success"){
               window.location.href = data.url;
             }
             else if(data.output == "failure"){
