@@ -24,6 +24,8 @@ spark = SparkSession.builder.getOrCreate()
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
 spark.conf.set("spark.sql.shuffle.partitions",
                spark.sparkContext.defaultParallelism)
+spark.conf.set('spark.sql.caseSensitive', False)
+
 
 """Variable that will change during testing"""
 # Production
@@ -154,8 +156,9 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
         fig = plt.gcf()
 
     else:
-        fig = sns.histplot(data=df, x=x_axis).set_title(
-            f"'{x_axis}' distribution").get_figure()
+        plt.pie(value_list, labels = label_list, colors = colors)
+        plt.title(f"{x_axis} distribution")
+        fig = plt.gcf()
     print(f"Figure plotted, posting figure ....")
     post_fig(fig)
 
