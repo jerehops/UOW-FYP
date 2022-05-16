@@ -61,7 +61,8 @@ def _get_dataframe(filename: str):
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
     else:
-        full_path = "opt/data/upload/{user_id}/{filename}"
+        full_path = "/opt/data/upload/{user_id}/{filename}"
+        print("This is the full path " +full_path)
         response_df = load_csv_file(full_path)
     return response_df
 
