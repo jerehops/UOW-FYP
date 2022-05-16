@@ -1,4 +1,4 @@
-version: "2.2"
+version: "3"
 services:
   flask-app:
     depends_on:
@@ -20,6 +20,14 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    deploy:
+        resources:
+            limits:
+              cpus: 2
+              memory: 2Gi
+            reservations:
+              cpus: 1.5
+              memory: 1Gi
   celery:
     depends_on:
       - redis
