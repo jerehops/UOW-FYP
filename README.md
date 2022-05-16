@@ -21,7 +21,7 @@ curl https://raw.githubusercontent.com/jerehops/fyp-flask/main/deployment/docker
 docker compose up
 
 ```
-If his doesn't work, add Sudo .
+If this doesn't work, add Sudo .
 ```bash
 sudo docker compose up
 
