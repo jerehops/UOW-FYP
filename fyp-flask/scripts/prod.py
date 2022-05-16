@@ -89,8 +89,8 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
                     filtering_str = f'{columns_name} = "{columns_filter}"'
                     filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
                 else:
-                    filtering_str = f'{filtering_str} and {columns_name} = "{columns_filter}"'
-                    filtering_str_for_figure = f'{filtering_str} \n and {columns_name} = "{columns_filter}"'
+                    filtering_str = f'{filtering_str} & {columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{filtering_str} \n & {columns_name} = "{columns_filter}"'
 
         query_statement = f'select {x_axis} from temp_view_item where {filtering_str}'
         print(query_statement)
@@ -125,8 +125,8 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
                     filtering_str = f'{columns_name} = "{columns_filter}"'
                     filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
                 else:
-                    filtering_str = f'{filtering_str} and {columns_name} = "{columns_filter}"'
-                    filtering_str_for_figure = f'{filtering_str} \n and {columns_name} = "{columns_filter}"'
+                    filtering_str = f'{filtering_str} & {columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{filtering_str} \n & {columns_name} = "{columns_filter}"'
 
         query_statement = f'select COUNT(*), {x_axis} from temp_view_item where {filtering_str} GROUP BY {x_axis} ORDER BY {x_axis}'
         print(query_statement)
