@@ -45,23 +45,23 @@ def main():
         data_Str = sys.argv[3]
         print(f"str received from frontend{data_Str}")
         parsed_data = parse_data(data_Str)
-        df = _get_dataframe(parsed_data['csv-location'], parsed_data['filename'])
+        df = _get_dataframe(parsed_data['filename'])
         parsed_data['data_frame'] = df
         print(f"Parsed data:{parsed_data}")
         plot_fig(parsed_data)
     except Exception:   
         post_error()
 
-def _get_dataframe(category: str, filename: str):
+def _get_dataframe(filename: str):
     """Return a dataframe depending on the job, 
        if we are processing existing data we will just load the path we know,if not we will load from the path provided
     """
-    if category == "movie_dataset":
+    if filename == "movie_dataset":
         movie_df = load_csv_file(movies_dev_path)
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
-    elif category == "upload":
-        full_path = "opt/data/upload/" + user_id + "/" + filename
+    else:
+        full_path = "opt/data/upload/{user_id}/{filename}"
         response_df = load_csv_file(full_path)
     return response_df
 
@@ -182,14 +182,12 @@ def parse_data(data_str: str) -> dict:
     data_dict = json.loads(data_str)
     for key, value in data_dict.items():
         print(f"Key={key}, value={value}")
-        if key == 'csv-location':
-            response_dict['csv-location'] = value
+        if key == 'filename':
+            response_dict['filename'] = value
         elif key == 'plot_type':
             response_dict['plot_type'] = value
         elif key == 'x-axis':
             response_dict['x-axis'] = value
-        elif key == 'filename':
-            response_dict['filename'] = value
         elif 'filters' in key:
             response_dict['filter_list'].append(value)
     return response_dict

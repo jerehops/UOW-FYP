@@ -75,13 +75,19 @@
       });
       return;
       }
+      else {
+        jsonObj['filename'] = $("#datafiles :selected").val()
+      }
       if (!$('input[name=graphtype]:checked').length > 0) {
-      $.alert({
-        title: 'Error!',
-        content: 'Please select a type of graph',
-      });
-      return;
-    }
+        $.alert({
+          title: 'Error!',
+          content: 'Please select a type of graph',
+        });
+        return;
+      }
+      else {
+        jsonObj['plot_type'] = $('input[name=graphtype]:checked').val()
+      }
       if ($('#x-axis').val()) {
         jsonObj['x-axis'] = $('#x-axis').val()
         if ($('#filter' + counter).val()) {
@@ -90,7 +96,6 @@
           }
           jsonObj['filters'] = inputObj;
         }
-        jsonObj['csv-location'] = "upload"
         $.ajax({
           type: 'POST',
           url: '/sparktask',
