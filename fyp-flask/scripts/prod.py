@@ -10,6 +10,7 @@ import seaborn as sns
 import json
 from pyspark.sql.functions import countDistinct
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 # create spark configuration
@@ -35,19 +36,28 @@ ratings_dev_path = "/opt/data/default/movie/ratings.csv"
 #ratings_dev_path = "/Users/kmeng/Desktop/ratings.csv"
 #movies_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/movies.csv"
 #ratings_dev_path = "/d/ubuntudev/qbox-blog-code/ch_6_toy_saas/ratings.csv"
+ERROR_IMG =  mpimg.imread('error.jpg') 
+
 
 task_id = sys.argv[1]
 user_id = sys.argv[2]
 
 
 def main():
-    data_Str = sys.argv[3]
-    print(f"str received from frontend{data_Str}")
-    parsed_data = parse_data(data_Str)
-    df = _get_dataframe(parsed_data['csv-location'])
-    parsed_data['data_frame'] = df
-    print(f"Parsed data:{parsed_data}")
-    plot_fig(parsed_data)
+    try:
+        data_Str = sys.argv[3]
+        print(f"str received from frontend{data_Str}")
+        parsed_data = parse_data(data_Str)
+        df = _get_dataframe(parsed_data['csv-location'])
+        parsed_data['data_frame'] = df
+        print(f"Parsed data:{parsed_data}")
+        plot_fig(parsed_data)
+    except Exception as e:   
+        imgplot = plt.imshow(ERROR_IMG)
+        error_fig = plt.gcf()
+        post_fig(error_fig)
+
+
 
 
 def test_histogram():
