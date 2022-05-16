@@ -1,4 +1,4 @@
-from pyspark import SparkContext, SparkConf
+from pyspark import SQLContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 import requests
@@ -24,7 +24,9 @@ spark = SparkSession.builder.getOrCreate()
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
 spark.conf.set("spark.sql.shuffle.partitions",
                spark.sparkContext.defaultParallelism)
-spark.conf.set('spark.sql.caseSensitive', False)
+sqlContext = SQLContext(spark.sparkContext)
+sqlContext.sql("set spark.sql.caseSensitive=false")
+
 
 
 """Variable that will change during testing"""
