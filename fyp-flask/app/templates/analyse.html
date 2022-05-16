@@ -68,6 +68,13 @@
   var inputObj = {};
   function start_task() {
     if (Object.keys(jsonObj).length >= 1) {
+      if (!$("#datafiles :selected").val()) {
+        $.alert({
+        title: 'Error!',
+        content: 'Please select a file',
+      });
+      return;
+      }
       if (!$('input[name=graphtype]:checked').length > 0) {
       $.alert({
         title: 'Error!',
@@ -83,6 +90,7 @@
           }
           jsonObj['filters'] = inputObj;
         }
+        jsonObj['csv-location'] = "upload"
         $.ajax({
           type: 'POST',
           url: '/sparktask',
@@ -171,18 +179,6 @@
         plugins: ["remove_button"],
         maxItems: 1,
         persist: false,
-        onItemAdd: function (value) {
-          jsonObj['csv-location'] = value;
-          count++;
-        },
-        onItemRemove: function (value) {
-          for (i = 0; i <= Object.keys(jsonObj).length + 1; i++) {
-            if (jsonObj['csv-location'] == value) {
-              delete jsonObj['csv-location']
-            }
-          }
-          count--;
-        }
       });
   });
 </script>
