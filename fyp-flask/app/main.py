@@ -112,5 +112,5 @@ def analyse():
 
 @main.route('/history')
 def history():
-    data_query = History.query.filter_by(user_id=str(current_user.id)).order_by(History.id.desc()).limit(10).all()
+    data_query = History.query.filter_by(user_id=str(current_user.id),error="false").order_by(History.id.desc()).limit(10).all()
     return render_template('history.html', data=data_query)
