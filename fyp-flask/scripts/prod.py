@@ -43,9 +43,10 @@ ratings_dev_path = "/opt/data/default/movie/ratings.csv"
 def main():
     try:
         data_Str = sys.argv[3]
-        print(f"str received from frontend{data_Str}")
         parsed_data = parse_data(data_Str)
+        print("Completed parse data")
         df = _get_dataframe(parsed_data['filename'])
+        print("Completed df")
         parsed_data['data_frame'] = df
         print(f"Parsed data:{parsed_data}")
         plot_fig(parsed_data)
