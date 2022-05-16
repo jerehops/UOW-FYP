@@ -65,7 +65,7 @@ def _get_dataframe(filename: str):
     if filename == "movie_dataset":
         movie_df = load_csv_file(movies_dev_path)
         ratings_df = load_csv_file(ratings_dev_path)
-        response_df = movie_df.join(ratings_df, 'movieId', 'left')
+        response_df = movie_df.join(ratings_df, on='movieId')
     else:
         full_path = f"/opt/data/uploads/{user_id}/{filename}"
         print("This is the full path " +full_path)
