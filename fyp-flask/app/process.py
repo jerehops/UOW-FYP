@@ -45,10 +45,11 @@ def update_data():
 @login_required
 def refresh_data():
     task_completed = History.query.filter_by(user_id=str(current_user.id), task_id=session['task_id']).first()
-    if task_completed.error == "false":
-        return jsonify(output="success", url=url_for('process.results'))
-    elif task_completed.error == "true":
-        return jsonify(output="failure", url=url_for('process.error'))    
+    if task_completed:
+        if task_completed.error == "false":
+            return jsonify(output="success", url=url_for('process.results'))
+        elif task_completed.error == "true":
+            return jsonify(output="failure", url=url_for('process.error'))    
     else:
         return jsonify(output="processing")
 
