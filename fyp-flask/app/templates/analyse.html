@@ -19,7 +19,7 @@
   Please enter your x-axis
 </h2>
 <div class="columns is-centered">
-  <input class="input is-small" type="textbox" name="x-axis" id="x-axis" style="width: 25%;" />
+  <input class="input is-small" type="textbox" name="x-axis" id="x-axis" style="width: 30%;" />
 </div>
 <h2 class="subtitle">
   Please enter your filters
@@ -30,7 +30,9 @@
 <br>
 <div id="mainContainer">
   <div class="columns is-centered">
-    <input class="input is-small" type="textbox" name="filter1" id="filter1" style="width: 25%;"
+    <input class="input is-small" type="textbox" name="header1" id="header1" style="width: 15%;"
+      placeholder="header 1" />
+    <input class="input is-small" type="textbox" name="filter1" id="filter1" style="width: 30%;"
       placeholder="filter 1" />
   </div>
 </div>
@@ -91,7 +93,7 @@
       jsonObj['x-axis'] = $('#x-axis').val()
       if ($('#filter' + counter).val()) {
         for (var i = 1; i < counter + 1; i++) {
-          inputObj['filter' + i] = $('#filter' + i).val();
+          inputObj[$('#header' + i).val()] = $('#filter' + i).val();
         }
         jsonObj['filters'] = inputObj;
       }
@@ -125,13 +127,21 @@
       newDiv = document.createElement('div');
       newDiv.setAttribute("class", "columns is-centered");
       newDiv.id = "column-div" + counter;
+      newHeaderInput = document.createElement("input");
+      newHeaderInput.setAttribute("type", "textbox");
+      newHeaderInput.setAttribute("class", "input is-small");
+      newHeaderInput.setAttribute("placeholder", "header " + counter);
+      newHeaderInput.name = "header" + counter;
+      newHeaderInput.id = "header" + counter;
+      newHeaderInput.setAttribute("style", "width: 30%;");
       newInput = document.createElement("input");
       newInput.setAttribute("type", "textbox");
       newInput.setAttribute("class", "input is-small");
       newInput.setAttribute("placeholder", "filter " + counter);
       newInput.name = "filter" + counter;
       newInput.id = "filter" + counter;
-      newInput.setAttribute("style", "width: 25%;");
+      newInput.setAttribute("style", "width: 30%;");
+      newDiv.appendChild(newHeaderInput);
       newDiv.appendChild(newInput);
       // Append newDiv input to the mainContainer div
       mainContainer.appendChild(newDiv);

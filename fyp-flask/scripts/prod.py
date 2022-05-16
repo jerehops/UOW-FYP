@@ -49,7 +49,8 @@ def main():
         parsed_data['data_frame'] = df
         print(f"Parsed data:{parsed_data}")
         plot_fig(parsed_data)
-    except Exception:   
+    except Exception as e:
+        print(e)   
         post_error()
 
 def _get_dataframe(filename: str):
@@ -61,7 +62,7 @@ def _get_dataframe(filename: str):
         ratings_df = load_csv_file(ratings_dev_path)
         response_df = movie_df.join(ratings_df, 'movieId', 'left')
     else:
-        full_path = f"/opt/data/upload/{user_id}/{filename}"
+        full_path = f"/opt/data/uploads/{user_id}/{filename}"
         print("This is the full path " +full_path)
         response_df = load_csv_file(full_path)
     return response_df
