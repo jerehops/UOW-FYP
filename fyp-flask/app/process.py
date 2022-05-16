@@ -35,7 +35,8 @@ def update_data():
     user_id = request.form['user_id']
     timestamp = request.form['timestamp']
     task_id = request.form['task_id']
-    newImage = History(task_id=task_id, imagestring=image_data, user_id=user_id, datetime=timestamp)
+    error = request.form['error']
+    newImage = History(task_id=task_id, imagestring=image_data, user_id=user_id, datetime=timestamp, error=error)
     db.session.add(newImage)
     db.session.commit()
     return "success", 201
@@ -44,17 +45,25 @@ def update_data():
 @login_required
 def refresh_data():
     task_completed = History.query.filter_by(user_id=str(current_user.id), task_id=session['task_id']).first()
-    if task_completed:
-        return jsonify(output="completed", url=url_for('process.results'))
+    if task_completed.error == "false":
+        return jsonify(output="success", url=url_for('process.results'))
+    elif task_completed.error == "true":
+        return jsonify(output="failure", url=url_for('process.error'))    
     else:
         return jsonify(output="processing")
 
-@process.route('/results', methods=['GET','POST'])
+@process.route('/results')
 @login_required
 def results():
     image_data = History.query.filter_by(user_id=str(current_user.id), task_id=session['task_id']).first()
     session['task_id']= ""
     return render_template('results.html', image_data=image_data.imagestring)
+
+@process.route('/error')
+@login_required
+def error():
+    session['task_id']= ""
+    return render_template('error.html')
 
 @celery.task(bind=True)
 def spark_job_task(self, uid, data):

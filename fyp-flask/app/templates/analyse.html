@@ -83,7 +83,6 @@
           }
           jsonObj['filters'] = inputObj;
         }
-        jsonObj['csv-location'] = 'upload'
         $.ajax({
           type: 'POST',
           url: '/sparktask',
@@ -173,13 +172,13 @@
         maxItems: 1,
         persist: false,
         onItemAdd: function (value) {
-          jsonObj['filename'] = value;
+          jsonObj['csv-location'] = value;
           count++;
         },
         onItemRemove: function (value) {
           for (i = 0; i <= Object.keys(jsonObj).length + 1; i++) {
-            if (jsonObj['filename'] == value) {
-              delete jsonObj['filename']
+            if (jsonObj['csv-location'] == value) {
+              delete jsonObj['csv-location']
             }
           }
           count--;

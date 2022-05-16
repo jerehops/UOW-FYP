@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+{% block content %}
+<h1 class="title">
+  Oops! Something went wrong!
+</h1>
+<h2 class="subtitle">
+	You will be redirected to the dashboard shortly...
+</h2>
+<br>
+<script>
+	setTimeout(function(){
+	   window.location.href = "/dashboard";
+	}, 3000);
+</script>
+{% endblock %}

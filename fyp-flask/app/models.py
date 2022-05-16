@@ -16,3 +16,4 @@ class History(UserMixin, db.Model):
     imagestring = db.Column(db.String(100))
     user_id = db.Column(db.String(100))
     datetime = db.Column(db.String(1000))
+    error = db.Column(db.String(1000))
