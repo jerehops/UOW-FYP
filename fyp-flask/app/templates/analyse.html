@@ -67,61 +67,53 @@
   var jsonObj = {};
   var inputObj = {};
   function start_task() {
-    if (Object.keys(jsonObj).length >= 1) {
-      if (!$("#datafiles :selected").val()) {
-        $.alert({
+    if (!$("#datafiles :selected").val()) {
+      $.alert({
+      title: 'Error!',
+      content: 'Please select a file',
+    });
+    return;
+    }
+    else {
+      jsonObj['filename'] = $("#datafiles :selected").val()
+    }
+    if (!$('input[name=graphtype]:checked').length > 0) {
+      $.alert({
         title: 'Error!',
-        content: 'Please select a file',
+        content: 'Please select a type of graph',
       });
       return;
-      }
-      else {
-        jsonObj['filename'] = $("#datafiles :selected").val()
-      }
-      if (!$('input[name=graphtype]:checked').length > 0) {
-        $.alert({
-          title: 'Error!',
-          content: 'Please select a type of graph',
-        });
-        return;
-      }
-      else {
-        jsonObj['plot_type'] = $('input[name=graphtype]:checked').val()
-      }
-      if ($('#x-axis').val()) {
-        jsonObj['x-axis'] = $('#x-axis').val()
-        if ($('#filter' + counter).val()) {
-          for (var i = 1; i < counter + 1; i++) {
-            inputObj['filter' + i] = $('#filter' + i).val();
-          }
-          jsonObj['filters'] = inputObj;
+    }
+    else {
+      jsonObj['plot_type'] = $('input[name=graphtype]:checked').val()
+    }
+    if ($('#x-axis').val()) {
+      jsonObj['x-axis'] = $('#x-axis').val()
+      if ($('#filter' + counter).val()) {
+        for (var i = 1; i < counter + 1; i++) {
+          inputObj['filter' + i] = $('#filter' + i).val();
         }
-        $.ajax({
-          type: 'POST',
-          url: '/sparktask',
-          cache: false,
-          data: JSON.stringify(jsonObj),
-          contentType: "application/json",
-          success: function (data) {
-            window.location.href = data
-          },
-          error: function () {
-            alert("You're not logged in. Please sign in again");
-            window.location.href = "/login"
-          }
-        });
+        jsonObj['filters'] = inputObj;
       }
-      else {
-        $.alert({
-          title: 'Error!',
-          content: 'X-Axis is required',
-        });
-      }
+      $.ajax({
+        type: 'POST',
+        url: '/sparktask',
+        cache: false,
+        data: JSON.stringify(jsonObj),
+        contentType: "application/json",
+        success: function (data) {
+          window.location.href = data
+        },
+        error: function () {
+          alert("You're not logged in. Please sign in again");
+          window.location.href = "/login"
+        }
+      });
     }
     else {
       $.alert({
         title: 'Error!',
-        content: 'Dataset is required!',
+        content: 'X-Axis is required',
       });
     }
   }
