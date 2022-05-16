@@ -3,14 +3,14 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:96
+    image: jerehops/fyp-flask:101
     container_name: flask
     entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
     ports:
       - 8000:8000
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     healthcheck:
       test:
         [
@@ -34,7 +34,7 @@ services:
     image: jerehops/fyp-flask:96
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     container_name: celery
     command: celery -A app.process worker --loglevel=info
   redis:
@@ -48,7 +48,7 @@ services:
       - 7077:7077
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
@@ -60,7 +60,7 @@ services:
       - "7000:7000"
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
@@ -79,7 +79,7 @@ services:
       - "7001:7000"
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
@@ -98,7 +98,7 @@ services:
       - "7002:7000"
     volumes:
       - defaultdata:/opt/data/default
-      - uploaddata:/opt/data/default
+      - uploaddata:/opt/data/uploads
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2

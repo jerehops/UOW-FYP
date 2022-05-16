@@ -147,6 +147,7 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
         print(f"Error during SQL Query....")
         print(e)
     print(f"Spark Sql Query Query completed, plotting figure....")
+    print(df[x_axis])
     colors = sns.color_palette('bright')[0:5]
     s = io.BytesIO()
     s.seek(0)
