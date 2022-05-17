@@ -117,7 +117,7 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
     print(f"Spark Sql Query Query completed, plotting figure....")
     
     plt.ticklabel_format(style='plain', axis='y', useOffset=False)
-    fig, ax = plt.subplots(figsize=(6, 4))
+    fig, ax = plt.subplots(figsize=(9, 9))
     
     ## If the number of x-axis is more than 10, we will display randomly 10 of the row 
     if panda_df.dtypes[x_axis] == object:
@@ -126,7 +126,7 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
         print(f"Number of x-axis is more than 10, we will display top 10 of the row")
         #panda_df = panda_df.sample(n=10)
         panda_df = panda_df.nlargest(10, "count(1)")
-        plt.tick_params('x', rotation=45, labelsize = 4)
+        plt.tick_params('x', rotation=45, labelsize = 6)
 
     if filtering:
         fig = sns.barplot(x=x_axis, y="count(1)", data=panda_df).set_title(
@@ -178,6 +178,7 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
         print(f"Error during SQL Query....")
         print(e)
     print(f"Spark Sql Query Query completed, plotting figure....")
+    fig, ax = plt.subplots(figsize=(7, 5))
 
 
     colors = sns.color_palette('bright')[0:5]
@@ -197,6 +198,7 @@ def post_fig(fig):
     print(f"Posting image to {url} for account user {user_id}")
     s = io.BytesIO()
     fig.savefig(s, format='jpg')
+    #fig.savefig("test.png", format='jpg') #local testing purpose
     s.seek(0)
     myimg = base64.b64encode(s.read()).decode("utf8")
     request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
@@ -251,7 +253,7 @@ def test_histogram():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
     test_data_Str = json.dumps({'plot_type': 'histogram', 'filename': 'movie_dataset',
-                               'x-axis': 'genres'})
+                               'x-axis': 'title'})
     # test_data_Str = json.dumps({'plot_type': 'histogram', 'filename': 'movie_dataset',
     #                            'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
@@ -264,7 +266,7 @@ def test_histogram():
 def test_pie_chart():
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
     test_data_Str = json.dumps({'plot_type': 'piechart', 'filename': 'movie_dataset',
-                               'x-axis': 'genres'})
+                               'x-axis': 'rating'})
     #test_data_Str = json.dumps({'plot_type': 'piechart', 'filename': 'movie_dataset',
     #                           'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
