@@ -4,7 +4,7 @@
 ### Docker Repository
 *For latest docker images kindly head to the URLs below to check*
  - [Flask (Frontend)](https://hub.docker.com/repository/docker/jerehops/fyp-flask)
- - [Spark Backend](https://hub.docker.com/repository/docker/jerehops/fyp-spark)
+ - [Spark (Backend)](https://hub.docker.com/repository/docker/jerehops/fyp-spark)
 ### Prerequisites
 
  - Install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
