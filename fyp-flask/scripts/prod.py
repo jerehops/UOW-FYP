@@ -11,6 +11,10 @@ import json
 from pyspark.sql.functions import countDistinct
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import textwrap
+import matplotlib as mpl
+mpl.rcParams['figure.dpi'] = 300
+sns.set_theme(style="whitegrid")
 
 
 task_id = sys.argv[1]
@@ -24,9 +28,9 @@ spark = SparkSession.builder.getOrCreate()
 spark.conf.set("spark.sql.repl.eagerEval.enabled", True)
 spark.conf.set("spark.sql.shuffle.partitions",
                spark.sparkContext.defaultParallelism)
-sqlContext = SQLContext(spark.sparkContext)
-sqlContext.sql("set spark.sql.caseSensitive=false")
-
+spark.conf.set('spark.sql.caseSensitive', False)
+#sqlContext = SQLContext(spark.sparkContext)
+#sqlContext.sql("set spark.sql.caseSensitive=false")
 
 
 """Variable that will change during testing"""
@@ -55,7 +59,7 @@ def main():
         print(f"Parsed data:{parsed_data}")
         plot_fig(parsed_data)
     except Exception as e:
-        print(e)   
+        print(e)
         post_error()
 
 def _get_dataframe(filename: str):
@@ -84,43 +88,7 @@ def plot_histogram(dataframe, x_axis: str, filtering: list):
     dataframe.createOrReplaceTempView("temp_view_item")
     if filtering:
         filtering_str = ""
-        filtering_str_for_figure = "" 
-        for fliter in filtering:
-            for columns_name, columns_filter in fliter.items():
-                if filtering_str == "":
-                    filtering_str = f'{columns_name} = "{columns_filter}"'
-                    filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
-                else:
-                    filtering_str = f'{filtering_str} & {columns_name} = "{columns_filter}"'
-                    filtering_str_for_figure = f'{filtering_str} \n & {columns_name} = "{columns_filter}"'
-
-        query_statement = f'select {x_axis} from temp_view_item where {filtering_str}'
-        print(query_statement)
-    else:
-        query_statement = f'select {x_axis} from temp_view_item'
-    print(f"Starting Spark Sql Query .........")
-    try:
-        df = spark.sql(query_statement)
-        print("Transfer dataframe into pandas")
-        df = df.toPandas()
-    except Exception as e:
-        print(f"Error during SQL Query....")
-        print(e)
-    print(f"Spark Sql Query Query completed, plotting figure....")
-    if filtering:
-        fig = sns.histplot(data=df, x=x_axis).set_title(
-            f"{x_axis} distribution of {filtering_str_for_figure}").get_figure()
-    else:
-        fig = sns.histplot(data=df, x=x_axis).set_title(
-            f"{x_axis} distribution").get_figure()
-    print(f"Figure plotted, posting figure ....")
-    post_fig(fig)
-
-def plot_pie_chart(dataframe, x_axis: str, filtering: list):
-    dataframe.createOrReplaceTempView("temp_view_item")
-    if filtering:
-        filtering_str = ""
-        filtering_str_for_figure = "" 
+        filtering_str_for_figure = ""
         for fliter in filtering:
             for columns_name, columns_filter in fliter.items():
                 if filtering_str == "":
@@ -133,52 +101,114 @@ def plot_pie_chart(dataframe, x_axis: str, filtering: list):
         query_statement = f'select COUNT(*), {x_axis} from temp_view_item where {filtering_str} GROUP BY {x_axis} ORDER BY {x_axis}'
         print(query_statement)
     else:
-        query_statement = f'select {x_axis} from temp_view_item'
+        query_statement = f'select COUNT(*), {x_axis} from temp_view_item GROUP BY {x_axis} ORDER BY {x_axis}'
+        print(query_statement)
+    print(f"Starting Spark Sql Query .........")
+    try:
+        df = spark.sql(query_statement)
+        print(df)
+        print("Transform dataframe into pandas")
+        panda_df = df.toPandas()
+        panda_df[x_axis] = panda_df[x_axis].apply(lambda row: '\n'.join(textwrap.wrap(row, 10)))
+        print(panda_df)
+    except Exception as e:
+        print(f"Error during SQL Query....")
+        print(e)
+    print(f"Spark Sql Query Query completed, plotting figure....")
+    
+    plt.ticklabel_format(style='plain', axis='y', useOffset=False)
+    fig, ax = plt.subplots(figsize=(6, 4))
+    
+    ## If the number of x-axis is more than 10, we will display randomly 10 of the row 
+    if panda_df.dtypes[x_axis] == object:
+        print("x-axis is string type data")
+    if panda_df.shape[0] > 10 and panda_df.dtypes[x_axis]:
+        print(f"Number of x-axis is more than 10, we will display top 10 of the row")
+        #panda_df = panda_df.sample(n=10)
+        panda_df = panda_df.nlargest(10, "count(1)")
+        plt.tick_params('x', rotation=45, labelsize = 4)
+
+    if filtering:
+        fig = sns.barplot(x=x_axis, y="count(1)", data=panda_df).set_title(
+            f"{x_axis} distribution of {filtering_str_for_figure}")
+    else:
+        fig = sns.barplot(x=x_axis, y="count(1)", data=panda_df).set_title(
+            f"{x_axis} distribution")
+    plt.ticklabel_format(style='plain', axis='y')
+    ax.set(ylabel='Count')
+    fig = plt.gcf()
+    print(f"Figure plotted, posting figure ....")
+    post_fig(fig)
+
+
+def plot_pie_chart(dataframe, x_axis: str, filtering: list):
+    dataframe.createOrReplaceTempView("temp_view_item")
+    if filtering:
+        filtering_str = ""
+        filtering_str_for_figure = ""
+        for fliter in filtering:
+            for columns_name, columns_filter in fliter.items():
+                if filtering_str == "":
+                    filtering_str = f'{columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{columns_name} = "{columns_filter}"'
+                else:
+                    filtering_str = f'{filtering_str} & {columns_name} = "{columns_filter}"'
+                    filtering_str_for_figure = f'{filtering_str} \n & {columns_name} = "{columns_filter}"'
+
+        query_statement = f'select COUNT(*), {x_axis} from temp_view_item where {filtering_str} GROUP BY {x_axis} ORDER BY {x_axis}'
+        print(query_statement)
+    else:
+        query_statement = f'select COUNT(*), {x_axis} from temp_view_item GROUP BY {x_axis} ORDER BY {x_axis}'
     print(f"Starting Spark Sql Query .........")
     try:
 
         df = spark.sql(query_statement)
-        print("Transfer dataframe into pandas")
-        df = df.toPandas()
-        print(df)
-        label_list = df[x_axis].tolist()
+        print("Transform dataframe into pandas")
+        panda_df = df.toPandas()
+        if panda_df.shape[0] > 10 :
+            print(f"Number of x-axis is more than 10, we will display top 10 of the row")
+            #panda_df = panda_df.sample(n=10)
+            panda_df = panda_df.nlargest(10, "count(1)")
+        panda_df[x_axis] = panda_df[x_axis].apply(lambda row: '\n'.join(textwrap.wrap(row, 25)))
+        label_list = panda_df[x_axis].tolist()
         print(label_list)
-        value_list = df['count(1)'].tolist()
+        value_list = panda_df['count(1)'].tolist()
         print(value_list)
     except Exception as e:
         print(f"Error during SQL Query....")
         print(e)
     print(f"Spark Sql Query Query completed, plotting figure....")
-    print(df[x_axis])
+
+
     colors = sns.color_palette('bright')[0:5]
     s = io.BytesIO()
     s.seek(0)
+    plt.pie(value_list, labels=label_list, colors=colors, textprops={'fontsize': 10})
     if filtering:
-        plt.pie(value_list, labels = label_list, colors = colors)
         plt.title(f"{x_axis} distribution of {filtering_str_for_figure}")
-        fig = plt.gcf()
-
     else:
-        plt.pie(value_list, labels = label_list, colors = colors)
         plt.title(f"{x_axis} distribution")
-        fig = plt.gcf()
+    fig = plt.gcf()
     print(f"Figure plotted, posting figure ....")
     post_fig(fig)
 
+
 def post_fig(fig):
-        print(f"Posting image to {url} for account user {user_id}")
-        s = io.BytesIO()
-        fig.savefig(s, format='jpg')
-        s.seek(0)
-        myimg = base64.b64encode(s.read()).decode("utf8")
-        request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
-                        "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M")), "error": "false"}
-        requests.post(url, data=request_data)
+    print(f"Posting image to {url} for account user {user_id}")
+    s = io.BytesIO()
+    fig.savefig(s, format='jpg')
+    s.seek(0)
+    myimg = base64.b64encode(s.read()).decode("utf8")
+    request_data = {"image": myimg, "user_id": user_id, "task_id": task_id,
+                    "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M")), "error": "false"}
+    requests.post(url, data=request_data)
+
 
 def post_error():
-        request_data = {"image": "", "user_id": user_id, "task_id": task_id,
-                        "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M")), "error": "true"}
-        requests.post(url, data=request_data)
+    request_data = {"image": "", "user_id": user_id, "task_id": task_id,
+                    "timestamp": (datetime.now().strftime("%d-%m-%Y, %H:%M")), "error": "true"}
+    requests.post(url, data=request_data)
+
 
 def parse_data(data_str: str) -> dict:
     """
@@ -201,6 +231,7 @@ def parse_data(data_str: str) -> dict:
             response_dict['filter_list'].append(value)
     return response_dict
 
+
 def plot_fig(parsed_data):
     """
     This function will determine what kind of plot function it will use. 
@@ -210,33 +241,38 @@ def plot_fig(parsed_data):
         plot_histogram(
             parsed_data['data_frame'], parsed_data['x-axis'], parsed_data['filter_list'])
     elif parsed_data['plot_type'] == 'piechart':
-        plot_pie_chart(    
+        plot_pie_chart(
             parsed_data['data_frame'], parsed_data['x-axis'], parsed_data['filter_list'])
 
 
-
-## Test functions
+# Test functions
 
 def test_histogram():
     #movie_rating_unique_dictionary = get_columns_value(movie_rating_df)
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
-    test_data_Str = json.dumps({'plot_type': 'histogram', 'csv-location': 'movie_dataset',
-                               'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
+    test_data_Str = json.dumps({'plot_type': 'histogram', 'filename': 'movie_dataset',
+                               'x-axis': 'genres'})
+    # test_data_Str = json.dumps({'plot_type': 'histogram', 'filename': 'movie_dataset',
+    #                            'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
-    df = _get_dataframe(test_parsed_data['csv-location'])
+    df = _get_dataframe(test_parsed_data['filename'])
     test_parsed_data['data_frame'] = df
     print(f"Parsed data:{test_parsed_data}")
     plot_fig(test_parsed_data)
 
+
 def test_pie_chart():
     print("WE ARE CURRENTLY RUNNING DUMMY DATE")
-    test_data_Str = json.dumps({'plot_type': 'piechart', 'csv-location': 'movie_dataset',
-                               'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
+    test_data_Str = json.dumps({'plot_type': 'piechart', 'filename': 'movie_dataset',
+                               'x-axis': 'genres'})
+    #test_data_Str = json.dumps({'plot_type': 'piechart', 'filename': 'movie_dataset',
+    #                           'x-axis': 'rating', "filters": {'title': "U2: Rattle and Hum (1988)"}})
     test_parsed_data = parse_data(test_data_Str)
-    df = _get_dataframe(test_parsed_data['csv-location'])
+    df = _get_dataframe(test_parsed_data['filename'])
     test_parsed_data['data_frame'] = df
     print(f"Parsed data:{test_parsed_data}")
     plot_fig(test_parsed_data)
+
 
 def get_columns_value(df):
     """
@@ -255,6 +291,7 @@ def get_columns_value(df):
         unique_value_dictionary[header] = df.select(
             F.collect_set(header).alias(header)).first()[header]
     return unique_value_dictionary
+
 
 if __name__ == "__main__":
     # dummy request for testing in isolation
