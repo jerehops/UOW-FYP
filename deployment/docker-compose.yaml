@@ -3,7 +3,7 @@ services:
   flask-app:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:101
+    image: jerehops/fyp-flask:106
     container_name: flask
     entrypoint: ["bash", "-c", "chmod +x /app/start-flask.sh && /app/start-flask.sh"]
     ports:
@@ -31,7 +31,7 @@ services:
   celery:
     depends_on:
       - redis
-    image: jerehops/fyp-flask:96
+    image: jerehops/fyp-flask:106
     volumes:
       - defaultdata:/opt/data/default
       - uploaddata:/opt/data/uploads
