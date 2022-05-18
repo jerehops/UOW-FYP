@@ -191,10 +191,8 @@
       document.getElementById('input'+count).style.visibility='visible'
       datalist = document.getElementById('datalist'+count)
       datalist.style.visibility='visible'
+      datalist.empty();
       if (value == "title") {
-        while (datalist.options.length > 0) {
-          datalist.remove(0);
-        }
         for (let [key, value] of Object.entries(mt)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value;
@@ -203,9 +201,6 @@
         }
       }
       if (value == "rating") {
-        while (datalist.options.length > 0) {
-          datalist.remove(0);
-        }
         for (let [key, value] of Object.entries(r)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value.toFixed(1);
@@ -214,9 +209,6 @@
         }
       }
       if (value == "genres") {
-        while (datalist.options.length > 0) {
-          datalist.remove(0);
-        }
         for (let [key, value] of Object.entries(g)) {
           newDropdownOption = document.createElement("option");
           newDropdownOption.text = value;
