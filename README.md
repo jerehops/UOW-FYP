@@ -15,7 +15,7 @@
 1. Download the fullstack-deployment folder;
 
 ```bash
-curl https://raw.githubusercontent.com/jerehops/fyp-flask/main/deployment/docker-compose.yaml -O 
+curl https://raw.githubusercontent.com/jerehops/fyp/main/deployment/docker-compose.yaml -O 
 
 ```
 
