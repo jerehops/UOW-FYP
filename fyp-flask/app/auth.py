@@ -58,7 +58,7 @@ def signup_post():
     if not check(email):
         flash('Invalid email')
         return redirect(url_for('auth.signup'))
-    elif not bool(firstname.replace(' ', '').strip() or len(firstname) < 4):
+    elif not bool(firstname.replace(' ', '').strip()) or len(firstname) < 4:
         flash('Invalid First Name')
         return redirect(url_for('auth.signup'))
     elif not bool(lastname.replace(' ', '').strip()) or len(lastname) < 2:
