@@ -191,7 +191,7 @@
       document.getElementById('input'+count).style.visibility='visible'
       datalist = document.getElementById('datalist'+count)
       datalist.style.visibility='visible'
-      datalist.empty();
+      $('#datalist'+count).empty();
       if (value == "title") {
         for (let [key, value] of Object.entries(mt)) {
           newDropdownOption = document.createElement("option");
